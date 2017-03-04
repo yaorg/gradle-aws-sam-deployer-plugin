@@ -16,7 +16,6 @@ class LambdaSamExtension {
     String samTemplatePath
     String stackName
     Map<String, String> parameterOverrides
-    Set<String> capabilities
 
     void setRegion(String region) {
         logger.lifecycle("Setting region to ${region}")

@@ -39,7 +39,7 @@ public class ChangeSetCreateComplete {
         public boolean matches(DescribeChangeSetResult result) {
             JsonNode queryNode = ObjectMapperSingleton.getObjectMapper().valueToTree(result);
             JsonNode finalResult = ast.accept(new JmesPathEvaluationVisitor(), queryNode);
-            return AcceptorPathMatcher.pathAll(expectedResult, finalResult);
+            return AcceptorPathMatcher.path(expectedResult, finalResult);
         }
 
         /**
@@ -78,7 +78,7 @@ public class ChangeSetCreateComplete {
         public boolean matches(DescribeChangeSetResult result) {
             JsonNode queryNode = ObjectMapperSingleton.getObjectMapper().valueToTree(result);
             JsonNode finalResult = ast.accept(new JmesPathEvaluationVisitor(), queryNode);
-            return AcceptorPathMatcher.pathAll(expectedResult, finalResult);
+            return AcceptorPathMatcher.path(expectedResult, finalResult);
         }
 
         /**

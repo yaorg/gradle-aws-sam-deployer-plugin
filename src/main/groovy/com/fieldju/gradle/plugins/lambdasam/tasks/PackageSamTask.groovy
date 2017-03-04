@@ -5,10 +5,8 @@ import com.amazonaws.services.s3.AmazonS3
 import com.amazonaws.services.s3.AmazonS3Client
 import com.fieldju.gradle.plugins.lambdasam.LambdaSamExtension
 import com.fieldju.gradle.plugins.lambdasam.LambdaSamPlugin
-import groovy.json.JsonBuilder
 import org.gradle.api.GradleException
 import org.gradle.api.tasks.TaskAction
-import org.gradle.internal.impldep.com.google.common.io.Files
 
 class PackageSamTask extends SamTask {
     static final String TASK_GROUP = 'LambdaSam'
@@ -31,7 +29,7 @@ class PackageSamTask extends SamTask {
         def kmsKeyId = config.getKmsKeyId()
         def artifactName = "${project.getName()}-${UUID.randomUUID().toString()}.jar"
         def key = "$s3Prefix/$artifactName"
-        def s3Uri = "s3://${s3Prefix}/${key}"
+        def s3Uri = "s3://${s3Bucket}/${key}"
 
         AmazonS3 s3
         if (kmsKeyId == null || kmsKeyId == "") {

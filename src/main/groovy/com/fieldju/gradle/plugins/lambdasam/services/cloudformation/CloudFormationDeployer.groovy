@@ -1,6 +1,5 @@
 package com.fieldju.gradle.plugins.lambdasam.services.cloudformation
 
-import com.amazonaws.services.cloudformation.AmazonCloudFormation
 import com.amazonaws.services.cloudformation.AmazonCloudFormationClient
 import com.amazonaws.services.cloudformation.model.AmazonCloudFormationException
 import com.amazonaws.services.cloudformation.model.CreateChangeSetRequest
@@ -48,7 +47,6 @@ class CloudFormationDeployer {
         try {
             res = amazonCloudFormation.describeStacks(new DescribeStacksRequest().withStackName(stackName))
         } catch (AmazonCloudFormationException e) {
-            logger.lifecycle("code == 400: ${e.statusCode == 400}, ends with dne: ${e.errorMessage} ${e.errorMessage.endsWith("does not exist")}")
             if (e.statusCode == 400 && e.errorMessage.endsWith("does not exist")) {
                 return false
             } else {
@@ -77,21 +75,19 @@ class CloudFormationDeployer {
      * @param samTemplate CloudFormation template string
      * @param parameters Template parameters object
      * @param capabilities Array of capabilities passed to CloudFormation
-     * @return change set name
+     * @return The create change set result
      */
-    String createChangeSet(String stackName,
-                        String samTemplate,
-                        Collection<Parameter> parameters,
-                        Collection<String> capabilities) {
+    ChangeSetMetadata createChangeSet(String stackName,
+                                      String samTemplate,
+                                      Collection<Parameter> parameters,
+                                      Collection<String> capabilities) {
 
         String changeSetType = hasStack(stackName) ? "UPDATE" : "CREATE"
-        CreateChangeSetResult result
+
         try {
-            logger.lifecycle("Template")
-            logger.lifecycle(samTemplate)
-            result = amazonCloudFormation.createChangeSet(
+            CreateChangeSetResult result = amazonCloudFormation.createChangeSet(
                     new CreateChangeSetRequest()
-                            .withChangeSetName("awssam-gradle-plugin-deploy-${UUID.randomUUID().toString()}")
+                            .withChangeSetName("gradle-lambdasam-plugin-deploy-${UUID.randomUUID().toString()}")
                             .withStackName(stackName)
                             .withTemplateBody(samTemplate)
                             .withChangeSetType(changeSetType)
@@ -99,11 +95,11 @@ class CloudFormationDeployer {
                             .withCapabilities(capabilities)
                             .withDescription("Created by AWS SAM Gradle plugin at ${ZonedDateTime.now(ZoneOffset.UTC)} UTC")
             )
+
+            return new ChangeSetMetadata([name: result.id, type: changeSetType])
         } catch (Throwable t) {
             throw new GradleException("Failed to create changeSet", t)
         }
-
-        return result.getId()
     }
 
     /**
@@ -128,7 +124,7 @@ class CloudFormationDeployer {
                     new ChangeSetCreateComplete.IsFAILEDMatcher()
                 )
                 .withDefaultPollingStrategy(new PollingStrategy(new MaxAttemptsRetryStrategy(120), new FixedDelayStrategy(10)))
-                .withExecutorService(Executors.newFixedThreadPool(50)).build();
+                .withExecutorService(Executors.newFixedThreadPool(50)).build()
 
         try {
             waiter.run(
@@ -166,7 +162,7 @@ class CloudFormationDeployer {
      */
     void waitForExecute(String changeSetType, String stackName) {
         logger.lifecycle("Waiting for stack create/update to complete")
-        Waiter<DescribeStacksRequest> waiter;
+        Waiter<DescribeStacksRequest> waiter
         if (changeSetType == "CREATE") {
             // wait for stack_create_complete
             waiter = amazonCloudFormation.waiters().stackCreateComplete()
@@ -191,16 +187,16 @@ class CloudFormationDeployer {
      * @param samTemplate CloudFormation template string
      * @param parameters Template parameters
      * @param capabilities capabilities passed to CloudFormation
-     * @return change set name
+     * @return The create change set result
      */
-    String createAndWaitForChangeSet(String stackName,
-                                     String samTemplate,
-                                     Collection<Parameter> parameters,
-                                     Collection<String> capabilities) {
+    ChangeSetMetadata createAndWaitForChangeSet(String stackName,
+                                                String samTemplate,
+                                                Collection<Parameter> parameters,
+                                                Collection<String> capabilities) {
 
-        String changeSetName = createChangeSet(stackName, samTemplate, parameters, capabilities)
-        waitForChangeSet(changeSetName, stackName)
-        return changeSetName
+        def result = createChangeSet(stackName, samTemplate, parameters, capabilities)
+        waitForChangeSet(result.name, stackName)
+        return result
     }
 
     /**
@@ -220,5 +216,9 @@ class CloudFormationDeployer {
         res.changes.each { change ->
             logger.lifecycle(change.toString())
         }
+    }
+
+    class ChangeSetMetadata {
+        String name, type
     }
 }

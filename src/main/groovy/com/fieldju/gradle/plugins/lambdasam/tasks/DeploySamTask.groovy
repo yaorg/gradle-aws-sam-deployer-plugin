@@ -32,18 +32,18 @@ class DeploySamTask extends SamTask {
         String stackName = config.getStackName()
         String samTemplate = new File("${project.buildDir.absolutePath}${File.separator}sam${File.separator}sam-deploy.yaml").text
         Set<Parameter> parameterOverrides = config.getParameterOverrides()
-        Set<String> capabilities = config.getCapabilities()
+        Set<String> capabilities = ['CAPABILITY_IAM'] as Set
 
-        String changeSetName = deployer.createAndWaitForChangeSet(stackName, samTemplate, parameterOverrides, capabilities)
+        def changeSetMetadata = deployer.createAndWaitForChangeSet(stackName, samTemplate, parameterOverrides, capabilities)
 
-        def executeChangeset = true
-        if (executeChangeset) {
-            deployer.executeChangeSet(changeSetName, stackName)
-            deployer.waitForExecute(changeSetName, stackName)
+        def executeChangeSet = true
+        if (executeChangeSet) {
+            deployer.executeChangeSet(changeSetMetadata.name, stackName)
+            deployer.waitForExecute(changeSetMetadata.type, stackName)
 
-            logger.lifecycle("Successfully executed change set ${changeSetName} for stack name: ${stackName}")
+            logger.lifecycle("Successfully executed change set ${changeSetMetadata.name} for stack name: ${stackName}")
         } else {
-            deployer.logChangeSetDescription(changeSetName, stackName)
+            deployer.logChangeSetDescription(changeSetMetadata.name, stackName)
         }
     }
 }

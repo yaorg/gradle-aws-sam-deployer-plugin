@@ -1,0 +1,16 @@
+repositories {
+    jcenter()
+}
+
+def awsSDKVersion = '1.11.98'
+
+dependencies {
+    compile localGroovy()
+    compile gradleApi()
+    compile group: 'com.amazonaws', name: 'aws-java-sdk-s3', version: "$awsSDKVersion"
+    compile group: 'com.amazonaws', name: 'aws-java-sdk-cloudformation', version: "$awsSDKVersion"
+
+
+    testCompile "junit:junit:4.12"
+    testCompile "org.mockito:mockito-all:1.10.19"
+}

@@ -26,11 +26,15 @@ import java.time.ZoneOffset
 import java.time.ZonedDateTime
 import java.util.concurrent.Executors
 
+/**
+ * A Service based off of the AWS CLI CloudFormation Deploy command deployer
+ * see: https://github.com/aws/aws-cli/blob/1.11.56/awscli/customizations/cloudformation/deployer.py
+ */
 class CloudFormationDeployer {
 
     Logger logger = Logging.getLogger(getClass())
 
-    AmazonCloudFormationClient amazonCloudFormation
+    private final AmazonCloudFormationClient amazonCloudFormation
 
     CloudFormationDeployer(AmazonCloudFormationClient amazonCloudFormation) {
           this.amazonCloudFormation = amazonCloudFormation
@@ -69,7 +73,7 @@ class CloudFormationDeployer {
     }
 
     /**
-     * Call Cloudformation to create a changeset and wait for it to complete
+     * Call CloudFormation to create a change set and wait for it to complete
      *
      * @param stackName Name or ID of stack
      * @param samTemplate CloudFormation template string
@@ -83,6 +87,8 @@ class CloudFormationDeployer {
                                       Collection<String> capabilities) {
 
         String changeSetType = hasStack(stackName) ? "UPDATE" : "CREATE"
+
+        logger.lifecycle("Creating change set for stack: ${stackName} with change set type: ${changeSetType}")
 
         try {
             CreateChangeSetResult result = amazonCloudFormation.createChangeSet(
@@ -181,7 +187,7 @@ class CloudFormationDeployer {
     }
 
     /**
-     * Call Cloudformation to create a changeSet and wait for it to complete
+     * Call CloudFormation to create a changeSet and wait for it to complete
      *
      * @param stackName Name or ID of stack
      * @param samTemplate CloudFormation template string

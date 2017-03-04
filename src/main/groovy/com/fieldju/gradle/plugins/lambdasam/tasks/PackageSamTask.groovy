@@ -1,16 +1,13 @@
 package com.fieldju.gradle.plugins.lambdasam.tasks
 
-import com.amazonaws.regions.Regions
-import com.amazonaws.services.s3.AmazonS3
-import com.amazonaws.services.s3.AmazonS3Client
 import com.fieldju.gradle.plugins.lambdasam.LambdaSamExtension
 import com.fieldju.gradle.plugins.lambdasam.LambdaSamPlugin
+import com.fieldju.gradle.plugins.lambdasam.services.s3.S3Uploader
 import org.gradle.api.GradleException
 import org.gradle.api.tasks.TaskAction
 
 class PackageSamTask extends SamTask {
     static final String TASK_GROUP = 'LambdaSam'
-    static final String CODE_URI_TOKEN = '@@CODE_URI@@'
 
     PackageSamTask() {
         group = TASK_GROUP
@@ -22,31 +19,32 @@ class PackageSamTask extends SamTask {
     @TaskAction
     void taskAction() {
         def config = project.extensions.getByName(LambdaSamPlugin.EXTENSION_NAME) as LambdaSamExtension
-
-        File artifact = config.getArtifactToUploadToS3()
         def s3Bucket = config.getS3Bucket()
         def s3Prefix = config.getS3Prefix()
-        def kmsKeyId = config.getKmsKeyId()
-        def artifactName = "${project.getName()}-${UUID.randomUUID().toString()}.jar"
-        def key = "$s3Prefix/$artifactName"
-        def s3Uri = "s3://${s3Bucket}/${key}"
 
-        AmazonS3 s3
-        if (kmsKeyId == null || kmsKeyId == "") {
-            s3 = AmazonS3Client.builder().standard().withRegion(Regions.fromName(config.getRegion())).build()
+        S3Uploader s3Uploader = new S3Uploader(config.getRegion(), config.getKmsKeyId(), config.getForceUploads())
+
+        Map<String, String> tokenArtifactMap = config.getTokenArtifactMap()
+        Map<String, String> tokenS3UriMap = [:]
+        if (tokenArtifactMap.isEmpty()) {
+            logger.warn("There were no tokens defined in the tokenArtifactMap, this task will not upload any" +
+                    " artifacts to s3 and automatically inject them into the copied deployable sam template.")
         } else {
-            throw new GradleException("KMS encryption of artifact not implemented yet!")
+            tokenArtifactMap.each { token, artifactPath ->
+                File artifactToUploadToS3 = new File(artifactPath)
+                if (! (artifactToUploadToS3.exists() && artifactToUploadToS3.isFile())) {
+                    throw new GradleException("The artifact: ${artifactPath} for token: ${token} did not exist or " +
+                            "was not a file (you must archive folders)")
+                }
+
+                try {
+                    def s3Uri = s3Uploader.uploadWithDedup(s3Bucket, s3Prefix, artifactToUploadToS3)
+                    tokenS3UriMap.put(token, s3Uri)
+                } catch (Throwable t) {
+                    throw new GradleException("Failed to upload artifact ${artifactToUploadToS3.absolutePath}", t)
+                }
+            }
         }
-
-        logger.lifecycle("Uploading ${artifact.absolutePath} to ${s3Uri}")
-
-        try {
-            s3.putObject(s3Bucket, key, artifact)
-        } catch (Throwable t) {
-            throw new GradleException("Failed to upload artifact ${artifact.absolutePath} to ${s3Uri}", t)
-        }
-
-        logger.lifecycle("Successfully uploaded ${artifact.absolutePath} to ${s3Uri}")
 
         logger.lifecycle("Copying sam template to build dir")
         // copy the template to the build dir
@@ -54,9 +52,10 @@ class PackageSamTask extends SamTask {
         buildDir.mkdirs()
         File dest = new File("${buildDir.absolutePath}${File.separator}sam-deploy.yaml")
         dest.write(config.getSamTemplateAsString())
-        // replace the code uri token with the s3 uri
-        ant.replace(file: dest.absolutePath, token: CODE_URI_TOKEN, value: s3Uri)
-
-        logger.lifecycle("Successfully injected s3Uri into ${dest.absolutePath}, ready to deploy")
+        // replace the tokens with the s3 URIs
+        tokenS3UriMap.each { token, uri ->
+            logger.lifecycle("Injecting ${uri} into ${dest.absolutePath} for token: ${token}")
+            ant.replace(file: dest.absolutePath, token: token, value: uri)
+        }
     }
 }

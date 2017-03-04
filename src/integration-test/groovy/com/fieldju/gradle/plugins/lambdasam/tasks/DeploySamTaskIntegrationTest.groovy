@@ -36,6 +36,8 @@ class DeploySamTaskIntegrationTest {
                 .standard()
                 .withRegion(regionString)
                 .build() as AmazonCloudFormationClient
+
+        log.info("Integration Test stack name: ${testStackName}")
     }
 
     @After
@@ -72,7 +74,10 @@ class DeploySamTaskIntegrationTest {
             s3Prefix = getRequiredTestParam('S3_PREFIX', 'The prefix / folder to store the fat jar in')
             stackName = testStackName
             samTemplatePath = "${temp.absolutePath}${File.separator}application.yaml"
-            artifactPath = "${temp.absolutePath}${File.separator}jvm-hello-world-lambda.jar"
+            tokenArtifactMap = [
+                    '@@LAMBDA_FAT_JAR@@': "${temp.absolutePath}${File.separator}jvm-hello-world-lambda.jar"
+            ]
+            forceUploads = true
         }
 
         // run the package sam task, since deploy depends on it

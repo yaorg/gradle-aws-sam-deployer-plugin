@@ -11,7 +11,7 @@ Resources:
       Description: Java Lambda Function
       MemorySize: 512
       Timeout: 300
-      CodeUri: @@CODE_URI@@
+      CodeUri: @@LAMBDA_FAT_JAR@@
       Role: !GetAtt LambdaRole.Arn
       Environment:
         Variables:

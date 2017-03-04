@@ -31,7 +31,7 @@ class DeploySamTask extends SamTask {
 
         String stackName = config.getStackName()
         String samTemplate = new File("${project.buildDir.absolutePath}${File.separator}sam${File.separator}sam-deploy.yaml").text
-        Set<Parameter> parameterOverrides = config.getParameterOverrides()
+        Set<Parameter> parameterOverrides = mergeParameters(config.getParameterOverrides())
         Set<String> capabilities = ['CAPABILITY_IAM'] as Set
 
         def changeSetMetadata = deployer.createAndWaitForChangeSet(stackName, samTemplate, parameterOverrides, capabilities)
@@ -45,5 +45,23 @@ class DeploySamTask extends SamTask {
         } else {
             deployer.logChangeSetDescription(changeSetMetadata.name, stackName)
         }
+    }
+
+    /**
+     * TODO
+     * @param parameterOverrides
+     * @return
+     */
+    private static Set<Parameter> mergeParameters(Map<String, String> parameterOverrides) {
+        Set<Parameter> parameters = []
+        parameterOverrides.each { k,v ->
+            parameters.add(
+                    new Parameter()
+                            .withParameterKey(k)
+                            .withParameterValue(v)
+                            .withUsePreviousValue(false)
+            )
+        }
+        return parameters
     }
 }

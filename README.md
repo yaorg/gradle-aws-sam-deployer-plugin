@@ -81,6 +81,8 @@ forceUploads       | boolean             | No           | By default if this is 
 
 **Example**
 
+Below is an example that supports using profiles to have env specific configuration
+
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 plugins {
   id "com.fieldju.aws-sam-deployer" version "[VERSION]"
@@ -88,19 +90,23 @@ plugins {
 
 apply plugin: "com.fieldju.aws-sam-deployer"
 
-aws-sam-deployer {
-    region = getRequiredTestParam('REGION', 'The region to use for S3, KMS, and CloudFormation')
-    s3Bucket = getRequiredTestParam('S3_BUCKET', 'The s3 bucket to upload the lambda fat jar')
-    s3Prefix = getRequiredTestParam('S3_PREFIX', 'The prefix / folder to store the fat jar in')
-    stackName = "demo-hello-word-jvm-lamdda"
-    samTemplatePath = "${temp.absolutePath}${File.separator}application.yaml"
+// load environment specific props from env profiles
+def environment = project.hasProperty('environment') ? project.'environment' : 'default'
+Properties props = new Properties()
+props.load(new FileInputStream("$project.rootDir/profile/"+"$environment"+".properties"))
+props.each { prop ->
+    project.ext.set(prop.key, prop.value)
+}
+
+'aws-sam-deployer' {
+    region = project.region
+    s3Bucket = project.s3Bucket
+    s3Prefix = "${project.getName()}-artifact-uploads"
+    stackName = "${project.environment}-jvm-lambda-template"
+    samTemplatePath = "${project.rootDir.absolutePath}${File.separator}application.yaml"
     tokenArtifactMap = [
-            '@@LAMBDA_FAT_JAR@@': "${temp.absolutePath}${File.separator}jvm-hello-world-lambda.jar"
+            '@@CODE_URI@@': "${project.buildDir.absolutePath}${File.separator}libs${File.separator}jvm-lambda-template.jar"
     ]
-    parameterOverrides = [
-            Foo: 'bar'
-    ]
-    forceUploads = true
 }
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

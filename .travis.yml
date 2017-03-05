@@ -4,7 +4,7 @@ jdk:
 cache:
   directories:
   - "$HOME/.m2"
-script: gradlew clean build integrationTest
+script: ./gradlew clean build integrationTest
 after_success:
 - test "${TRAVIS_PULL_REQUEST}" == "false" && test "${TRAVIS_TAG}" != "" && ./gradlew
   publishPlugins --stacktrace

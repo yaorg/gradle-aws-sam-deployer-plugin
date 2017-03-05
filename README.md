@@ -35,7 +35,7 @@ The lambda sam plugin provides the following Tasks:
 
 **Tasks** | **Description** | **DependsOn**
 ----------|-----------------|--------------
-[packageSam](src/main/groovy/com/fieldju/gradle/plugins/lambdasam/tasks/PackageSam.groovy)| Uploads the fatJar / artifact to S3 and injects the code uri into the SAM Template replacing @@CODE_URI@@ tokens. | N/A
+[packageSam](src/main/groovy/com/fieldju/gradle/plugins/lambdasam/tasks/PackageSam.groovy)| Uploads the fatJar / artifact to S3 and injects the code uri into the SAM Template replacing @@CODE_URI@@ tokens. [See the integration test for example](src/integration-test/resources/application.yaml#L14) | N/A
 [deploySam](src/main/groovy/com/fieldju/gradle/plugins/lambdasam/tasks/DeploySamTask.groovy)| Deploys a serverless application using a serverless application model yaml file.                                | packageSam
 
 

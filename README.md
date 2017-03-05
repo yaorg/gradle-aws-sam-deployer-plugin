@@ -39,6 +39,8 @@ The plugin then iterates over the template parameters and either uses your overr
 
 To use the plugin, include it as a dependency in your buildscript section of build.gradle:
 
+Latest release: https://github.com/fieldju/gradle-lambdasam-plugin/releases/latest
+
 Build script snippet for use in all Gradle versions:
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

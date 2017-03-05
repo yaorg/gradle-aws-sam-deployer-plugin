@@ -4,7 +4,7 @@ Gradle Lambda Sam Plugin
 This plugin allows for the convenient deployment of SAM CloudFormation Templates from within a Gradle project.
 Underneath the hood this plugin uses the AWS CLI to execute AWS Cloud Formation APIs
 
-This plugin is inspired by the offical AWS CLI, specifically the [package](https://github.com/aws/aws-cli/blob/1.11.56/awscli/customizations/cloudformation/package.py) and [deploy](https://github.com/aws/aws-cli/blob/1.11.56/awscli/customizations/cloudformation/deploy.py) commands.
+This plugin is inspired by the offical AWS CLI, specifically the package ([code](https://github.com/aws/aws-cli/blob/1.11.56/awscli/customizations/cloudformation/package.py) / [description](https://github.com/aws/aws-cli/blob/1.11.56/awscli/examples/cloudformation/_package_description.rst)) and deploy ([code](https://github.com/aws/aws-cli/blob/1.11.56/awscli/customizations/cloudformation/deploy.py) / [description](https://github.com/aws/aws-cli/blob/1.11.56/awscli/examples/cloudformation/_deploy_description.rst)) commands.
 
 I kept finding my self executing shell in my gradle scripts and was motivated to create this plugin.
 
@@ -57,7 +57,7 @@ kmsKeyId           | String              | No           | The kms cmk id to use 
 samTemplatePath    | String              | Yes          | The file path to the SAM Yaml or JSON where you have defined your serverless application model
 stackName          | String              | Yes          | The stack name to use for the Cloud Formation stack
 parameterOverrides | Map<String, String> | No           | A map of Parameters and there values to supply the Cloud Formation template
-tokenArtifactMap   | Map<String, String> | No           | A map of ant style tokens ex: @@FAT_JAR_URI@@ to file paths ex: `${project.buildDir.absolutePath}${File.seperator}libs${File.seperator}my-lambda-project-fat-jar.jar`, the package command uses this map to upload the files to s3 and replaces the tokens in the sam template with the S3 URIs
+tokenArtifactMap   | Map<String, String> | No           | A map of ant style tokens ex: `@@FAT_JAR_URI@@` to file paths ex: `${project.buildDir.absolutePath}${File.seperator}libs${File.seperator}my-lambda-project-fat-jar.jar`, the package command uses this map to upload the files to s3 and replaces the tokens in the sam template with the S3 URIs
 forceUploads       | boolean             | No           | By default if this is left off or set to false, to package command uses m5 hashes to skip files that have not changed since the last deploy. Set this to true to force re-uploading
 
 **Example**

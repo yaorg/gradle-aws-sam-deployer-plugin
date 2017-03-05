@@ -39,7 +39,7 @@ The plugin then iterates over the template parameters and either uses your overr
 
 To use the plugin, include it as a dependency in your buildscript section of build.gradle:
 
-Latest release: https://github.com/fieldju/gradle-lambdasam-plugin/releases/latest
+Latest release: https://github.com/fieldju/gradle-aws-sam-deployer-plugin/releases/latest
 
 Build script snippet for use in all Gradle versions:
 
@@ -111,8 +111,8 @@ execute the deploySam command `./gradlew clean build deploySam`
 
 The Gradle Lambda Sam Plugin is released under the [Apache License, Version 2.0](LICENSE.txt)
 
-[travis]:https://travis-ci.org/fieldju/gradle-lambdasam-plugin
-[travis img]:https://api.travis-ci.org/fieldju/gradle-lambdasam-plugin.svg?branch=master&v=1
+[travis]:https://travis-ci.org/fieldju/gradle-aws-sam-deployer-plugin
+[travis img]:https://api.travis-ci.org/fieldju/gradle-aws-sam-deployer-plugin.svg?branch=master&v=1
 
 [license]:LICENSE.txt
 [license img]:https://img.shields.io/badge/License-Apache%202-blue.svg

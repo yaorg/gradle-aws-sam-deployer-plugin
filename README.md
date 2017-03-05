@@ -3,7 +3,10 @@ Gradle Lambda Sam Plugin
 
 This plugin allows for the convenient deployment of SAM CloudFormation Templates from within a Gradle project.
 Underneath the hood this plugin uses the AWS CLI to execute AWS Cloud Formation APIs
- 
+
+This plugin is inspired by the offical AWS CLI, specifically the [package](https://github.com/aws/aws-cli/blob/1.11.56/awscli/customizations/cloudformation/package.py) and [deploy](https://github.com/aws/aws-cli/blob/1.11.56/awscli/customizations/cloudformation/deploy.py) commands.
+
+I kept finding my self executing shell in my gradle scripts and was motivated to create this plugin.
 
 Usage
 -----

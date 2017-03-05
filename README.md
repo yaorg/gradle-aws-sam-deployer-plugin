@@ -111,7 +111,7 @@ props.each { prop ->
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-execute the deploySam command `./gradlew clean build deploySam`
+execute the deploySam command `./gradlew clean shadowJar deploySam -Penvironment=development --stacktrace`
 
 ## License
 

@@ -1,13 +1,13 @@
 package com.fieldju.gradle.plugins.lambdasam.tasks
 
-import com.fieldju.gradle.plugins.lambdasam.LambdaSamExtension
-import com.fieldju.gradle.plugins.lambdasam.LambdaSamPlugin
+import com.fieldju.gradle.plugins.lambdasam.AwsSamDeployerExtension
+import com.fieldju.gradle.plugins.lambdasam.AwsSamDeployerPlugin
 import com.fieldju.gradle.plugins.lambdasam.services.s3.S3Uploader
 import org.gradle.api.GradleException
 import org.gradle.api.tasks.TaskAction
 
 class PackageSamTask extends SamTask {
-    static final String TASK_GROUP = 'LambdaSam'
+    static final String TASK_GROUP = 'AWS Lambda SAM Deployer'
 
     PackageSamTask() {
         group = TASK_GROUP
@@ -18,7 +18,7 @@ class PackageSamTask extends SamTask {
      */
     @TaskAction
     void taskAction() {
-        def config = project.extensions.getByName(LambdaSamPlugin.EXTENSION_NAME) as LambdaSamExtension
+        def config = project.extensions.getByName(AwsSamDeployerPlugin.EXTENSION_NAME) as AwsSamDeployerExtension
         def s3Bucket = config.getS3Bucket()
         def s3Prefix = config.getS3Prefix()
 

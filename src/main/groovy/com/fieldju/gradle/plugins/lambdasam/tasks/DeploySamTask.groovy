@@ -4,13 +4,13 @@ import com.amazonaws.regions.Regions
 import com.amazonaws.services.cloudformation.AmazonCloudFormationClient
 import com.amazonaws.services.cloudformation.model.Parameter
 import com.amazonaws.services.cloudformation.model.TemplateParameter
-import com.fieldju.gradle.plugins.lambdasam.LambdaSamExtension
-import com.fieldju.gradle.plugins.lambdasam.LambdaSamPlugin
+import com.fieldju.gradle.plugins.lambdasam.AwsSamDeployerExtension
+import com.fieldju.gradle.plugins.lambdasam.AwsSamDeployerPlugin
 import com.fieldju.gradle.plugins.lambdasam.services.cloudformation.CloudFormationDeployer
 import org.gradle.api.tasks.TaskAction
 
 class DeploySamTask extends SamTask {
-    static final String TASK_GROUP = 'LambdaSam'
+    static final String TASK_GROUP = 'AWS Lambda SAM Deployer'
 
     DeploySamTask() {
         group = TASK_GROUP
@@ -21,7 +21,7 @@ class DeploySamTask extends SamTask {
      */
     @TaskAction
     void taskAction() {
-        def config = project.extensions.getByName(LambdaSamPlugin.EXTENSION_NAME) as LambdaSamExtension
+        def config = project.extensions.getByName(AwsSamDeployerPlugin.EXTENSION_NAME) as AwsSamDeployerExtension
 
         CloudFormationDeployer deployer = new CloudFormationDeployer(
                 AmazonCloudFormationClient.builder()

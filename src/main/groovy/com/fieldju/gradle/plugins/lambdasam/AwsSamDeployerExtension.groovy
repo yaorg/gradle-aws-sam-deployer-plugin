@@ -2,7 +2,7 @@ package com.fieldju.gradle.plugins.lambdasam
 
 import org.gradle.api.GradleException
 
-class LambdaSamExtension {
+class AwsSamDeployerExtension {
 
     String region
     String s3Bucket

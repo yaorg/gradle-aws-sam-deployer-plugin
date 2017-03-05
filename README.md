@@ -65,7 +65,7 @@ plugins {
 }
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Configure the extension properties in the *lambdasam* closure:
+Configure the extension properties in the *aws-sam-deployer* closure:
 
 **Property name**  | **Type**            | **Required** | **Description**
 -------------------|---------------------|--------------|---
@@ -88,7 +88,7 @@ plugins {
 
 apply plugin: "com.fieldju.aws-sam-deployer"
 
-lambdaSam {
+aws-sam-deployer {
     region = getRequiredTestParam('REGION', 'The region to use for S3, KMS, and CloudFormation')
     s3Bucket = getRequiredTestParam('S3_BUCKET', 'The s3 bucket to upload the lambda fat jar')
     s3Prefix = getRequiredTestParam('S3_PREFIX', 'The prefix / folder to store the fat jar in')

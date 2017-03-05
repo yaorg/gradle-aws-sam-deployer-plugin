@@ -28,13 +28,14 @@ See https://github.com/fieldju/gradle-aws-sam-deployer-plugin for usage and more
             'deploy' ,
             'gradle',
             'gradle-plugin',
-            'cerberus'
+            'cerberus',
+            'fieldju'
     ]
 
     plugins {
         greetingsPlugin {
             id = 'com.fieldju.aws-sam-deployer'
-            displayName = 'Gradle AWS Sam Deployer Plugin'
+            displayName = 'Gradle AWS SAM Deployer Plugin'
         }
     }
 }

@@ -7,14 +7,14 @@ import org.gradle.api.Project
 import org.gradle.api.logging.Logger
 import org.gradle.api.logging.Logging
 
-class LambdaSamPlugin implements Plugin<Project> {
-    static final String EXTENSION_NAME = 'lambdaSam'
+class AwsSamDeployerPlugin implements Plugin<Project> {
+    static final String EXTENSION_NAME = 'aws-sam-deployer'
 
     Logger logger = Logging.getLogger(getClass())
 
     @Override
     void apply(Project project) {
-        project.extensions.create(EXTENSION_NAME, LambdaSamExtension)
+        project.extensions.create(EXTENSION_NAME, AwsSamDeployerExtension)
         addTasks(project)
     }
 

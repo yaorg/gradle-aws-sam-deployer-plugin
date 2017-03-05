@@ -10,7 +10,7 @@ import com.amazonaws.services.s3.AmazonS3Client
 import com.amazonaws.services.s3.model.DeleteObjectsRequest
 import com.amazonaws.waiters.Waiter
 import com.amazonaws.waiters.WaiterParameters
-import com.fieldju.gradle.plugins.lambdasam.LambdaSamPlugin
+import com.fieldju.gradle.plugins.lambdasam.AwsSamDeployerPlugin
 import groovy.util.logging.Slf4j
 import org.gradle.testfixtures.ProjectBuilder
 import org.junit.After
@@ -82,9 +82,9 @@ class DeploySamTaskIntegrationTest {
         Files.copy(fatJarSource, fatJarDest)
 
         def project = ProjectBuilder.builder().withName('DeploySamTaskIntegrationTest').withProjectDir(temp).build()
-        LambdaSamPlugin plugin = new LambdaSamPlugin()
+        AwsSamDeployerPlugin plugin = new AwsSamDeployerPlugin()
         plugin.apply(project)
-        project.'lambdaSam' {
+        project.'aws-sam-deployer' {
             region = regionString
             s3Bucket = bucket
             s3Prefix = prefix
@@ -100,10 +100,10 @@ class DeploySamTaskIntegrationTest {
         }
 
         // run the package sam task, since deploy depends on it
-        def packageSameTask = project.tasks.getByName(LambdaSamPlugin.TaskDefinitions.PACKAGE_SAM_TASK.name as String) as PackageSamTask
+        def packageSameTask = project.tasks.getByName(AwsSamDeployerPlugin.TaskDefinitions.PACKAGE_SAM_TASK.name as String) as PackageSamTask
         packageSameTask.taskAction()
         // deploy the sam
-        def deploySamTask = project.tasks.getByName(LambdaSamPlugin.TaskDefinitions.DEPLOY_SAM_TASK.name as String) as DeploySamTask
+        def deploySamTask = project.tasks.getByName(AwsSamDeployerPlugin.TaskDefinitions.DEPLOY_SAM_TASK.name as String) as DeploySamTask
         deploySamTask.taskAction()
 
         try {

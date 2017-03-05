@@ -11,7 +11,3 @@ apply from: file('gradle/integration.gradle')
 apply from: file('gradle/dependencies.gradle')
 apply from: file('gradle/artifacts.gradle')
 apply from: file('gradle/publish.gradle')
-
-task wrapper (type: Wrapper) {
-    gradleVersion = '3.4'
-}

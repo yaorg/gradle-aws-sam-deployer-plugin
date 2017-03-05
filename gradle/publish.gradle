@@ -1,0 +1,40 @@
+System.setProperty(
+        'gradle.publish.key',
+        System.getenv('GRADLE_PUBLISH_KEY') ?  System.getenv('GRADLE_PUBLISH_KEY') : 'unknown'
+)
+System.setProperty(
+        'gradle.publish.secret',
+        System.getenv('GRADLE_PUBLISH_SECRET') ? System.getenv('GRADLE_PUBLISH_SECRET') : 'unknown'
+)
+
+pluginBundle {
+    website = 'https://github.com/fieldju/gradle-lambdasam-plugin'
+    vcsUrl = 'https://github.com/fieldju/gradle-lambdasam-plugin'
+    description = """This plugin allows for the convenient deployment of Serverless Application Model (SAM) CloudFormation Templates for lambda based serverless applications from within a Gradle project.
+
+This plugin is inspired by the official AWS CLI, specifically the package and deploy commands which are described in AWS's Introducing Simplified Serverless Application Deployment and Management blog post (https://aws.amazon.com/blogs/compute/introducing-simplified-serverless-application-deplyoment-and-management/).
+
+See https://github.com/fieldju/gradle-lambdasam-plugin for usage and more information"""
+    tags = [
+            'cloudformation',
+            'aws' ,
+            'aws-sam' ,
+            'sam' ,
+            'serverless-application-model' ,
+            'aws-lambda' ,
+            'lambda' ,
+            'aws-cli' ,
+            'package' ,
+            'deploy' ,
+            'gradle',
+            'gradle-plugin',
+            'cerberus'
+    ]
+
+    plugins {
+        greetingsPlugin {
+            id = 'com.fieldju.aws-sam-deployer'
+            displayName = 'Gradle AWS Lambda Sam Plugin'
+        }
+    }
+}

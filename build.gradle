@@ -1,3 +1,7 @@
+plugins {
+    id 'com.gradle.plugin-publish' version '0.9.7'
+}
+
 apply from: file('gradle/buildscript.gradle'), to: buildscript
 
 apply plugin: 'groovy'
@@ -6,6 +10,7 @@ apply plugin: 'maven'
 apply from: file('gradle/integration.gradle')
 apply from: file('gradle/dependencies.gradle')
 apply from: file('gradle/artifacts.gradle')
+apply from: file('gradle/publish.gradle')
 
 task wrapper (type: Wrapper) {
     gradleVersion = '3.4'

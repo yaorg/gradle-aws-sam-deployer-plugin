@@ -5,9 +5,9 @@ This plugin allows for the convenient deployment of Serverless Application Model
 based serverless applications from within a Gradle project.
 
 This plugin is inspired by the official AWS CLI, specifically the
-package([code](https://github.com/aws/aws-cli/blob/1.11.56/awscli/customizations/cloudformation/package.py) / 
+`package` ([code](https://github.com/aws/aws-cli/blob/1.11.56/awscli/customizations/cloudformation/package.py) / 
 [description](https://github.com/aws/aws-cli/blob/1.11.56/awscli/examples/cloudformation/_package_description.rst)) 
-and deploy ([code](https://github.com/aws/aws-cli/blob/1.11.56/awscli/customizations/cloudformation/deploy.py) /
+and `deploy` ([code](https://github.com/aws/aws-cli/blob/1.11.56/awscli/customizations/cloudformation/deploy.py) /
  [description](https://github.com/aws/aws-cli/blob/1.11.56/awscli/examples/cloudformation/_deploy_description.rst)) commands which are described in AWS's [Introducing Simplified Serverless Application Deployment and Management](https://aws.amazon.com/blogs/compute/introducing-simplified-serverless-application-deplyoment-and-management/) blog post.
 
 I kept finding myself executing shell to use the CLI to execute those commands in a non-elegant manner in my gradle scripts and was motivated to create this plugin.
@@ -29,7 +29,7 @@ Once uploads are complete this tasks copies your SAM Template that you defined i
 
 ### [deploySam](src/main/groovy/com/fieldju/gradle/plugins/lambdasam/tasks/DeploySamTask.groovy)
 
-This task uses the template outputted by the `packageSam` task end uses CloudFormation to create a change set to either create or update your stack using the `stackName` property you configured.
+This task uses the template outputted by the `packageSam` task and CloudFormation to create a change set to either create or update your stack using the `stackName` property you configured.
 
 This task will ask CloudFormation to validate your template and get all the parameters that the template requires. 
 The plugin then iterates over the template parameters and either uses your overrides defined in `parameterOverrides` or tells CloudFormation to use the previous value.

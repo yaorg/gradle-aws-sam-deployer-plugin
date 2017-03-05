@@ -45,17 +45,17 @@ Extension properties
 The plugin defines the following extension properties in the *lambdasam*
 closure:
 
-**Property name**  | **Type** | **Description**
--------------------|----------|---
-region             | String              | The region to upload the fatJar / lambda code artifact, and execute the cloud formation in
-s3Bucket           | String              | The S3 Bucket to store the fatJar / lambda code artifact
-s3prefix           | String              | The prefix in the bucket to use when storing the fatJar / lambda code artifact
-kmsKeyId           | String              | The kms cmk id to use to encrypt the fatJar / lambda code artifact when uploading to S3, if not supplied server side AES256 will be used
-samTemplatePath    | String              | The file path to the SAM Yaml or JSON where you have defined your serverless application model
-stackName          | String              | The stack name to use for the Cloud Formation stack
-parameterOverrides | Map<String, String> | A map of Parameters and there values to supply the Cloud Formation template
-tokenArtifactMap   | Map<String, String> | A map of ant style tokens ex: @@FAT_JAR_URI@@ to file paths ex: `${project.buildDir.absolutePath}${File.seperator}libs${File.seperator}my-lambda-project-fat-jar.jar`, the package command uses this map to upload the files to s3 and replaces the tokens in the sam template with the S3 URIs
-forceUploads       | boolean             | By default if this is left off or set to false, to package command uses m5 hashes to skip files that have not changed since the last deploy. Set this to true to force re-uploading
+**Property name**  | **Type**            | **Required** | **Description**
+-------------------|---------------------|--------------|---
+region             | String              | Yes          | The region to upload the fatJar / lambda code artifact, and execute the cloud formation in
+s3Bucket           | String              | Yes          | The S3 Bucket to store the fatJar / lambda code artifact
+s3prefix           | String              | No           | The prefix in the bucket to use when storing the fatJar / lambda code artifact
+kmsKeyId           | String              | No           | The kms cmk id to use to encrypt the fatJar / lambda code artifact when uploading to S3, if not supplied server side AES256 will be used
+samTemplatePath    | String              | Yes          | The file path to the SAM Yaml or JSON where you have defined your serverless application model
+stackName          | String              | Yes          | The stack name to use for the Cloud Formation stack
+parameterOverrides | Map<String, String> | No           | A map of Parameters and there values to supply the Cloud Formation template
+tokenArtifactMap   | Map<String, String> | No           | A map of ant style tokens ex: @@FAT_JAR_URI@@ to file paths ex: `${project.buildDir.absolutePath}${File.seperator}libs${File.seperator}my-lambda-project-fat-jar.jar`, the package command uses this map to upload the files to s3 and replaces the tokens in the sam template with the S3 URIs
+forceUploads       | boolean             | No           | By default if this is left off or set to false, to package command uses m5 hashes to skip files that have not changed since the last deploy. Set this to true to force re-uploading
 
 **Example**
 

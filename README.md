@@ -50,11 +50,12 @@ closure:
 region             | String              | The region to upload the fatJar / lambda code artifact, and execute the cloud formation in
 s3Bucket           | String              | The S3 Bucket to store the fatJar / lambda code artifact
 s3prefix           | String              | The prefix in the bucket to use when storing the fatJar / lambda code artifact
-artifactPath       | String              | The file path to the fatJar / lambda code artifact. ex: `${project.buildDir.absolutePath}${File.seperator}libs${File.seperator}my-lambda-project-fat-jar.jar`
-kmsKeyId           | String              | The kms cmk id to use to encrypt the fatJar / lambda code artifact when uploading to S3
+kmsKeyId           | String              | The kms cmk id to use to encrypt the fatJar / lambda code artifact when uploading to S3, if not supplied server side AES256 will be used
 samTemplatePath    | String              | The file path to the SAM Yaml or JSON where you have defined your serverless application model
 stackName          | String              | The stack name to use for the Cloud Formation stack
-parameterOverrides | Map<String, String> | A map of Parameters and there values to supply the Cloud Formation tamplate
+parameterOverrides | Map<String, String> | A map of Parameters and there values to supply the Cloud Formation template
+tokenArtifactMap   | Map<String, String> | A map of ant style tokens ex: @@FAT_JAR_URI@@ to file paths ex: `${project.buildDir.absolutePath}${File.seperator}libs${File.seperator}my-lambda-project-fat-jar.jar`, the package command uses this map to upload the files to s3 and replaces the tokens in the sam template with the S3 URIs
+forceUploads       | boolean             | By default if this is left off or set to false, to package command uses m5 hashes to skip files that have not changed since the last deploy. Set this to true to force re-uploading
 
 **Example**
 
@@ -62,12 +63,15 @@ parameterOverrides | Map<String, String> | A map of Parameters and there values 
 apply plugin: 'lambdasam'
 
 lambdaSam {
-    region = 'us-west-2'
-    s3Bucket = project.'s3Bucket'
-    s3Prefix = project.'s3Prefix'
-    stackName = "${project.'env'}-demo-stack"
+    region = getRequiredTestParam('REGION', 'The region to use for S3, KMS, and CloudFormation')
+    s3Bucket = getRequiredTestParam('S3_BUCKET', 'The s3 bucket to upload the lambda fat jar')
+    s3Prefix = getRequiredTestParam('S3_PREFIX', 'The prefix / folder to store the fat jar in')
+    stackName = testStackName
     samTemplatePath = "${temp.absolutePath}${File.separator}application.yaml"
-    artifactPath = "${temp.absolutePath}${File.separator}jvm-hello-world-lambda.jar"
+    tokenArtifactMap = [
+            '@@LAMBDA_FAT_JAR@@': "${temp.absolutePath}${File.separator}jvm-hello-world-lambda.jar"
+    ]
+    forceUploads = true
 }
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

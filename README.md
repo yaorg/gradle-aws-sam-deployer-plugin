@@ -90,10 +90,13 @@ lambdaSam {
     region = getRequiredTestParam('REGION', 'The region to use for S3, KMS, and CloudFormation')
     s3Bucket = getRequiredTestParam('S3_BUCKET', 'The s3 bucket to upload the lambda fat jar')
     s3Prefix = getRequiredTestParam('S3_PREFIX', 'The prefix / folder to store the fat jar in')
-    stackName = testStackName
+    stackName = "demo-hello-word-jvm-lamdda"
     samTemplatePath = "${temp.absolutePath}${File.separator}application.yaml"
     tokenArtifactMap = [
             '@@LAMBDA_FAT_JAR@@': "${temp.absolutePath}${File.separator}jvm-hello-world-lambda.jar"
+    ]
+    parameterOverrides = [
+            Foo: 'bar'
     ]
     forceUploads = true
 }

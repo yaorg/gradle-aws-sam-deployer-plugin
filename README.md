@@ -1,12 +1,38 @@
 Gradle Lambda Sam Plugin
 =====================
 
-This plugin allows for the convenient deployment of SAM CloudFormation Templates from within a Gradle project.
-Underneath the hood, this plugin uses the AWS CLI to execute AWS CloudFormation APIs
+This plugin allows for the convenient deployment of Serverless Application Model (SAM) CloudFormation Templates for lambda 
+based serverless applications from within a Gradle project.
 
-This plugin is inspired by the offical AWS CLI, specifically the package ([code](https://github.com/aws/aws-cli/blob/1.11.56/awscli/customizations/cloudformation/package.py) / [description](https://github.com/aws/aws-cli/blob/1.11.56/awscli/examples/cloudformation/_package_description.rst)) and deploy ([code](https://github.com/aws/aws-cli/blob/1.11.56/awscli/customizations/cloudformation/deploy.py) / [description](https://github.com/aws/aws-cli/blob/1.11.56/awscli/examples/cloudformation/_deploy_description.rst)) commands.
+This plugin is inspired by the official AWS CLI, specifically the
+package([code](https://github.com/aws/aws-cli/blob/1.11.56/awscli/customizations/cloudformation/package.py) / 
+[description](https://github.com/aws/aws-cli/blob/1.11.56/awscli/examples/cloudformation/_package_description.rst)) 
+and deploy ([code](https://github.com/aws/aws-cli/blob/1.11.56/awscli/customizations/cloudformation/deploy.py) /
+ [description](https://github.com/aws/aws-cli/blob/1.11.56/awscli/examples/cloudformation/_deploy_description.rst)) commands which are described in AWS's [Introducing Simplified Serverless Application Deployment and Management](https://aws.amazon.com/blogs/compute/introducing-simplified-serverless-application-deplyoment-and-management/) blog post.
 
-I kept finding my self executing shell in my gradle scripts and was motivated to create this plugin.
+I kept finding myself executing shell to use the CLI to execute those commands in a non-elegant manner in my gradle scripts and was motivated to create this plugin.
+
+This plugin has 2 tasks packageSam and deploySam described below that closely mirror the AWS CLI Commands.
+
+Tasks
+-----------------
+
+### [packageSam](src/main/groovy/com/fieldju/gradle/plugins/lambdasam/tasks/PackageSamTask.groovy)
+
+This task uses the `tokenArtifactMap`, `region`, `s3Bucket`, `s3Prefix`, `kmsKeyId`, `forceUploads` extension properties to upload artifacts defined in the map to s3. 
+
+If you supply a KMS CMK id via the `kmsKeyId` property the uploads will be configured to be encrypted with your KMS key. If you do not supply a KMS CMK id the task will configure your uploads to use the server side AES256 encryption.
+
+This task uses MD5 hashes to name your files, so that it can detect if no changes have been made since the last upload and skip re-uploading files that have not changed. You can use `forceUploads = true` to always force fresh uploads.
+
+Once uploads are complete this tasks copies your SAM Template that you defined in `samTemplatePath` to the build dir in the `sam` folders and uses ant to replace the tokens you defined in the map with the S3 URIs so that when you deploy the template CloudFormation will know where your artifacts are in S3. 
+
+### [deploySam](src/main/groovy/com/fieldju/gradle/plugins/lambdasam/tasks/DeploySamTask.groovy)
+
+This task uses the template outputted by the `packageSam` task end uses CloudFormation to create a change set to either create or update your stack using the `stackName` property you configured.
+
+This task will ask CloudFormation to validate your template and get all the parameters that the template requires. 
+The plugin then iterates over the template parameters and either uses your overrides defined in `parameterOverrides` or tells CloudFormation to use the previous value.
 
 Usage
 -----
@@ -28,25 +54,7 @@ buildscript {
 }
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-[Current Version](https://github.com/fieldju/jvm-lambda-template/releases)
-
- 
-Tasks
------------------
-
-The lambda sam plugin provides the following Tasks:
-
-**Tasks** | **Description** | **DependsOn**
-----------|-----------------|--------------
-[packageSam](src/main/groovy/com/fieldju/gradle/plugins/lambdasam/tasks/PackageSamTask.groovy)| Uploads the fatJar / artifact to S3 and injects the code uri into the SAM Template replacing tokens with links to S3 URIs | N/A
-[deploySam](src/main/groovy/com/fieldju/gradle/plugins/lambdasam/tasks/DeploySamTask.groovy)| Deploys a serverless application using a serverless application model yaml file.                                | packageSam
-
-
-Extension properties
---------------------
-
-The plugin defines the following extension properties in the *lambdasam*
-closure:
+Configure the extension properties in the *lambdasam* closure:
 
 **Property name**  | **Type**            | **Required** | **Description**
 -------------------|---------------------|--------------|---
@@ -63,6 +71,19 @@ forceUploads       | boolean             | No           | By default if this is 
 **Example**
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+buildscript { 
+    repositories { 
+        jcenter() 
+        maven { 
+            url "https://dl.bintray.com/fieldju/maven"
+        }
+    }
+
+    dependencies { 
+        classpath(group: 'com.fiedldju:gradle-lambdasam-plugin:[ENTER VERSION HERE]') 
+    } 
+}
+
 apply plugin: 'lambdasam'
 
 lambdaSam {
@@ -78,3 +99,5 @@ lambdaSam {
 }
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+execute the deploySam command `./gradlew clean build deploySam`

@@ -1,5 +1,7 @@
-Gradle Lambda Sam Plugin
-=====================
+# Gradle Lambda Sam Plugin
+
+[![][travis img]][travis]
+[![][license img]][license]
 
 This plugin allows for the convenient deployment of Serverless Application Model (SAM) CloudFormation Templates for lambda 
 based serverless applications from within a Gradle project.
@@ -14,8 +16,7 @@ I kept finding myself executing shell to use the CLI to execute those commands i
 
 This plugin has 2 tasks packageSam and deploySam described below that closely mirror the AWS CLI Commands.
 
-Tasks
------------------
+## Tasks
 
 ### [packageSam](src/main/groovy/com/fieldju/gradle/plugins/lambdasam/tasks/PackageSamTask.groovy)
 
@@ -34,8 +35,7 @@ This task uses the template outputted by the `packageSam` task and CloudFormatio
 This task will ask CloudFormation to validate your template and get all the parameters that the template requires. 
 The plugin then iterates over the template parameters and either uses your overrides defined in `parameterOverrides` or tells CloudFormation to use the previous value.
 
-Usage
------
+## Usage
 
 To use the plugin, include it as a dependency in your buildscript section of build.gradle:
 
@@ -104,3 +104,13 @@ lambdaSam {
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 execute the deploySam command `./gradlew clean build deploySam`
+
+## License
+
+The Gradle Lambda Sam Plugin is released under the [Apache License, Version 2.0](LICENSE.txt)
+
+[travis]:https://travis-ci.org/fieldju/gradle-lambdasam-plugin
+[travis img]:https://api.travis-ci.org/fieldju/gradle-lambdasam-plugin.svg?branch=master
+
+[license]:LICENSE.txt
+[license img]:https://img.shields.io/badge/License-Apache%202-blue.svg

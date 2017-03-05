@@ -2,7 +2,7 @@ Gradle Lambda Sam Plugin
 =====================
 
 This plugin allows for the convenient deployment of SAM CloudFormation Templates from within a Gradle project.
-Underneath the hood this plugin uses the AWS CLI to execute AWS Cloud Formation APIs
+Underneath the hood, this plugin uses the AWS CLI to execute AWS CloudFormation APIs
 
 This plugin is inspired by the offical AWS CLI, specifically the package ([code](https://github.com/aws/aws-cli/blob/1.11.56/awscli/customizations/cloudformation/package.py) / [description](https://github.com/aws/aws-cli/blob/1.11.56/awscli/examples/cloudformation/_package_description.rst)) and deploy ([code](https://github.com/aws/aws-cli/blob/1.11.56/awscli/customizations/cloudformation/deploy.py) / [description](https://github.com/aws/aws-cli/blob/1.11.56/awscli/examples/cloudformation/_deploy_description.rst)) commands.
 
@@ -38,7 +38,7 @@ The lambda sam plugin provides the following Tasks:
 
 **Tasks** | **Description** | **DependsOn**
 ----------|-----------------|--------------
-[packageSam](src/main/groovy/com/fieldju/gradle/plugins/lambdasam/tasks/PackageSam.groovy)| Uploads the fatJar / artifact to S3 and injects the code uri into the SAM Template replacing tokens with links to S3 URIs | N/A
+[packageSam](src/main/groovy/com/fieldju/gradle/plugins/lambdasam/tasks/PackageSamTask.groovy)| Uploads the fatJar / artifact to S3 and injects the code uri into the SAM Template replacing tokens with links to S3 URIs | N/A
 [deploySam](src/main/groovy/com/fieldju/gradle/plugins/lambdasam/tasks/DeploySamTask.groovy)| Deploys a serverless application using a serverless application model yaml file.                                | packageSam
 
 

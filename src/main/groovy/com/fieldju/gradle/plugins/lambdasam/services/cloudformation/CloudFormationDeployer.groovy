@@ -10,6 +10,8 @@ import com.amazonaws.services.cloudformation.model.DescribeStacksRequest
 import com.amazonaws.services.cloudformation.model.ExecuteChangeSetRequest
 import com.amazonaws.services.cloudformation.model.ExecuteChangeSetResult
 import com.amazonaws.services.cloudformation.model.Parameter
+import com.amazonaws.services.cloudformation.model.TemplateParameter
+import com.amazonaws.services.cloudformation.model.ValidateTemplateRequest
 import com.amazonaws.waiters.FixedDelayStrategy
 import com.amazonaws.waiters.MaxAttemptsRetryStrategy
 import com.amazonaws.waiters.PollingStrategy
@@ -222,6 +224,16 @@ class CloudFormationDeployer {
         res.changes.each { change ->
             logger.lifecycle(change.toString())
         }
+    }
+
+    List<TemplateParameter> getTemplateParameters(String template) {
+        def res
+        try {
+            res = amazonCloudFormation.validateTemplate(new ValidateTemplateRequest().withTemplateBody(template))
+        } catch (Throwable t) {
+            throw new GradleException("Failed to validate template when attempting to extract template parameters", t)
+        }
+        return res.getParameters()
     }
 
     class ChangeSetMetadata {

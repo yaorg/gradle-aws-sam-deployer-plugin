@@ -77,6 +77,9 @@ class DeploySamTaskIntegrationTest {
             tokenArtifactMap = [
                     '@@LAMBDA_FAT_JAR@@': "${temp.absolutePath}${File.separator}jvm-hello-world-lambda.jar"
             ]
+            parameterOverrides = [
+                    Foo: 'bar'
+            ]
             forceUploads = true
         }
 
@@ -90,6 +93,8 @@ class DeploySamTaskIntegrationTest {
         try {
             def res = cloudFormation.describeStacks(new DescribeStacksRequest().withStackName(testStackName))
             assertEquals("There should be one and only one stack with the name: ${testStackName}", 1, res.stacks.size())
+            assertEquals("There should be one and only one parameter", 1, res.stacks.get(0).parameters.size())
+            assertEquals("The param Foo should be bar", "bar",  res.stacks.get(0).parameters.get(0).getParameterValue())
         } catch (AmazonCloudFormationException e) {
             log.error("Failed trying to describe stack: ${testStackName}", e)
             fail("Failed to assert that the stack: ${testStackName} was successfully created, msg: ${e.errorMessage}")

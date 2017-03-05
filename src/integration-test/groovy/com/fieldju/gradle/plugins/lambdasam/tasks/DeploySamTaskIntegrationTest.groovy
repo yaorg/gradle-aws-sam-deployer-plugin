@@ -45,7 +45,7 @@ class DeploySamTaskIntegrationTest {
 
         s3 = AmazonS3Client.builder().standard().withRegion(regionString).build()
 
-        prefix = "gradle-aws-sam-deployer-plugin-integration-test/${UUID.randomUUID().toString()}/"
+        prefix = "gradle-aws-sam-deployer-plugin-integration-test/${UUID.randomUUID().toString()}"
         bucket = getRequiredTestParam('S3_BUCKET', 'The s3 bucket to upload the lambda fat jar')
         log.info("Integration Test stack name: ${testStackName}")
     }

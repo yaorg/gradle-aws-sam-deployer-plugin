@@ -39,18 +39,27 @@ The plugin then iterates over the template parameters and either uses your overr
 
 To use the plugin, include it as a dependency in your buildscript section of build.gradle:
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-buildscript { 
-    repositories { 
-        jcenter() 
-        maven { 
-            url "https://dl.bintray.com/fieldju/maven"
-        }
-    }
+Build script snippet for use in all Gradle versions:
 
-    dependencies { 
-        classpath(group: 'com.fiedldju:gradle-lambdasam-plugin:[ENTER VERSION HERE]') 
-    } 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+buildscript {
+  repositories {
+    maven {
+      url "https://plugins.gradle.org/m2/"
+    }
+  }
+  dependencies {
+    classpath "gradle.plugin.com.fieldju:gradle-aws-sam-deployer-plugin:[VERSION]"
+  }
+}
+
+apply plugin: "com.fieldju.aws-sam-deployer"
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Build script snippet for new, incubating, plugin mechanism introduced in Gradle 2.1:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+plugins {
+  id "com.fieldju.aws-sam-deployer" version "[VERSION]"
 }
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -71,20 +80,11 @@ forceUploads       | boolean             | No           | By default if this is 
 **Example**
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-buildscript { 
-    repositories { 
-        jcenter() 
-        maven { 
-            url "https://dl.bintray.com/fieldju/maven"
-        }
-    }
-
-    dependencies { 
-        classpath(group: 'com.fiedldju:gradle-lambdasam-plugin:[ENTER VERSION HERE]') 
-    } 
+plugins {
+  id "com.fieldju.aws-sam-deployer" version "[VERSION]"
 }
 
-apply plugin: 'lambdasam'
+apply plugin: "com.fieldju.aws-sam-deployer"
 
 lambdaSam {
     region = getRequiredTestParam('REGION', 'The region to use for S3, KMS, and CloudFormation')

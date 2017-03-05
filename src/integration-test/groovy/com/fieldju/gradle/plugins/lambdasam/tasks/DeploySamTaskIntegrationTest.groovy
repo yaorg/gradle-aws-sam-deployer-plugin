@@ -7,9 +7,7 @@ import com.amazonaws.services.cloudformation.model.DeleteStackRequest
 import com.amazonaws.services.cloudformation.model.DescribeStacksRequest
 import com.amazonaws.services.s3.AmazonS3
 import com.amazonaws.services.s3.AmazonS3Client
-import com.amazonaws.services.s3.model.DeleteObjectRequest
 import com.amazonaws.services.s3.model.DeleteObjectsRequest
-import com.amazonaws.services.s3.transfer.TransferManager
 import com.amazonaws.waiters.Waiter
 import com.amazonaws.waiters.WaiterParameters
 import com.fieldju.gradle.plugins.lambdasam.LambdaSamPlugin

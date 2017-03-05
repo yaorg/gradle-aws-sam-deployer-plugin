@@ -37,8 +37,8 @@ class LambdaSamPlugin implements Plugin<Project> {
      * This is where the available tasks for this plugin are defined
      */
     enum TaskDefinitions {
-        PACKAGE_SAM_TASK(PackageSamTask, 'packageSam', 'Uploads the fat jar / archive to S3 and injects the code uri.', null),
-        DEPLOY_SAM_TASK(DeploySamTask, 'deploySam', 'You should change this description.', 'packageSam')
+        PACKAGE_SAM_TASK(PackageSamTask, 'packageSam', 'Uploads the the artifacts defined in tokenArtifactMap to S3 and replaces the tokens in the SAM template with the S3 URI.', null),
+        DEPLOY_SAM_TASK(DeploySamTask, 'deploySam', 'After uploading the artifacts and prepping the SAM template deploy with use CloudFormation to create or update your stack', 'packageSam')
 
         final Class taskClass
         final String name

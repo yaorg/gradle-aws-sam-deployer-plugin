@@ -13,7 +13,8 @@ import org.gradle.api.logging.Logging
 import java.security.MessageDigest
 
 /**
- *
+ * A service loosely based off of the AWS CLI CloudFormation Package command s3uploader
+ * see: https://github.com/aws/aws-cli/blob/1.11.56/awscli/customizations/cloudformation/s3uploader.py
  */
 class S3Uploader {
 

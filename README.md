@@ -110,7 +110,7 @@ execute the deploySam command `./gradlew clean build deploySam`
 The Gradle Lambda Sam Plugin is released under the [Apache License, Version 2.0](LICENSE.txt)
 
 [travis]:https://travis-ci.org/fieldju/gradle-lambdasam-plugin
-[travis img]:https://api.travis-ci.org/fieldju/gradle-lambdasam-plugin.svg?branch=master
+[travis img]:https://api.travis-ci.org/fieldju/gradle-lambdasam-plugin.svg?branch=master&v=1
 
 [license]:LICENSE.txt
 [license img]:https://img.shields.io/badge/License-Apache%202-blue.svg

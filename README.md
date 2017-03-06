@@ -113,6 +113,9 @@ props.each { prop ->
 
 execute the deploySam command `./gradlew clean shadowJar deploySam -Penvironment=development --stacktrace`
 
+## Quick Start
+You can clone my [jvm lambda template project](https://github.com/fieldju/jvm-lambda-template) that has hello world for Java, Scala and Groovy and is pre-configured with this plugin to be up and running with a new SAM JVM Serverless Application.
+
 ## License
 
 The Gradle Lambda Sam Plugin is released under the [Apache License, Version 2.0](LICENSE.txt)

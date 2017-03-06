@@ -1,4 +1,4 @@
-# Gradle Lambda Sam Plugin
+# Gradle AWS SAM Deployer Plugin
 
 [![][travis img]][travis]
 [![][license img]][license]

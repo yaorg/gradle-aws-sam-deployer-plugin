@@ -51,6 +51,7 @@ class S3Uploader {
 
         def s3Uri = "s3://${bucket}/${key}"
 
+        logger.lifecycle("Generated md5 hash: ${md5Hash} attempting to put ${file.getName()} at ${s3Uri}}")
         if (! forceUploads && transferManager.getAmazonS3Client().doesObjectExist(bucket, key)) {
             logger.lifecycle("File: ${file.absolutePath} with MD5: ${md5Hash} already uploaded at: ${s3Uri} skipping ...")
             return s3Uri

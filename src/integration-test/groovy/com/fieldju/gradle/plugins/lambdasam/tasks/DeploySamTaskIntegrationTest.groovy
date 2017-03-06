@@ -12,6 +12,7 @@ import com.amazonaws.waiters.Waiter
 import com.amazonaws.waiters.WaiterParameters
 import com.fieldju.gradle.plugins.lambdasam.AwsSamDeployerPlugin
 import groovy.util.logging.Slf4j
+import org.gradle.api.logging.LogLevel
 import org.gradle.testfixtures.ProjectBuilder
 import org.junit.After
 import org.junit.Before

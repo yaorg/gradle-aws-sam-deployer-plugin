@@ -9,6 +9,7 @@ dependencies {
     compile group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.4.7'
     compile group: 'com.amazonaws', name: 'aws-java-sdk-s3', version: "$awsSDKVersion"
     compile group: 'com.amazonaws', name: 'aws-java-sdk-cloudformation', version: "$awsSDKVersion"
+    compile group: 'com.amazonaws', name: 'aws-java-sdk-sts', version: "$awsSDKVersion"
 
 
     testCompile "junit:junit:4.12"

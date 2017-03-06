@@ -22,6 +22,7 @@ class DeploySamTask extends SamTask {
     @TaskAction
     void taskAction() {
         def config = project.extensions.getByName(AwsSamDeployerPlugin.EXTENSION_NAME) as AwsSamDeployerExtension
+        logExtraDetails(config)
 
         CloudFormationDeployer deployer = new CloudFormationDeployer(
                 AmazonCloudFormationClient.builder()

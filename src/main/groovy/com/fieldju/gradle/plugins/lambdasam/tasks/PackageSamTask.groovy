@@ -19,6 +19,8 @@ class PackageSamTask extends SamTask {
     @TaskAction
     void taskAction() {
         def config = project.extensions.getByName(AwsSamDeployerPlugin.EXTENSION_NAME) as AwsSamDeployerExtension
+        logExtraDetails(config)
+
         def s3Bucket = config.getS3Bucket()
         def s3Prefix = config.getS3Prefix()
 

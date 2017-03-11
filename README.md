@@ -116,6 +116,10 @@ Now you can execute the deploySam command `./gradlew clean shadowJar deploySam -
 ## Quick Start
 You can clone my [jvm lambda template project](https://github.com/fieldju/jvm-lambda-template) that has hello world for Java, Scala and Groovy and is pre-configured with this plugin to be up and running with a new SAM JVM Serverless Application.
 
+## Maintainer
+
+Justin Field | [@fieldju](https://twitter.com/Fieldju) | [fieldju@gmail.com](mailto:fieldju@gmail.com) | [fieldju.com](http://fieldju.com)
+
 ## License
 
 The Gradle Lambda Sam Plugin is released under the [Apache License, Version 2.0](LICENSE.txt)

@@ -4,10 +4,12 @@ jdk:
 cache:
   directories:
   - "$HOME/.m2"
-script: "./gradlew integrationTest --info"
 after_success:
+# run the integration test for Pull requests
+- test "${TRAVIS_PULL_REQUEST}" == "true" && ./gradlew integrationTest --info
+# run the integration test and release for tagged releases
 - test "${TRAVIS_PULL_REQUEST}" == "false" && test "${TRAVIS_TAG}" != "" && ./gradlew
-  publishPlugins --stacktrace
+  integrationTest publishPlugins --stacktrace --info
 env:
   global:
   - secure: x9+v5MWVg9cG0O97YM69k8X/7KnVbu9mgJoiwxui7DlGcGKZ1mRN7qnIVJCEtc2m6arGJ3yurSoyrFj/Hk+DWkqiqIMh6sCnDDyWU7dSbILYyiTzI37hindNc9szSXlV9V5qiPgSDkNP4oEYpvlj3ZH6loOpxETP0s3I11vJ8DZvWDdSWr63zL86O9pzoBuMW0aRxFyPOL39aFIXLf7mjigXNG4UmgCTjoBa2UQrrZO+0b4uWLWOWMs51aejPbyNkgLD9OGdjEBFfNINnTtfvhqQGjkAMVTmL8UlqX7hyGUjEwEi2MhiMBcNLPVHLNRJeYSFApHfa5+6ZWRAh3C5a9FKzEOiOu/YmrpaA3yqL45HvOnJRVtypSpnrH1ZIQXxRe9nWfuqiClLEtjLUEJiNtySgSY8xuwm7lvPW44is7NMbN9gXn0yt806x3+GEmNcCcWrJSQ5v8BGJruH/fGeo6Z8/bMfzD6mHc1tvI9ts0kNUSIw0FRhx1mtadsIPajZrag1cGnLNVvnJrtTQJSKxk6HyuOCEYLT49UAnspKws9o8Xmp/sBZvFc35Uf+CkQOUW8UuZLhexD8ZXF24IOxp/jiJIuuUYm+7e/zET1jMqz9pDQzrALmTRTP8p7xa1jeUpfVWSpW4139AZYoKukUEJnIZImqT3JRub137aJRQ/Y=

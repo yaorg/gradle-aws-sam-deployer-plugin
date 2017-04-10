@@ -12,6 +12,7 @@ import com.amazonaws.waiters.Waiter
 import com.amazonaws.waiters.WaiterParameters
 import com.fieldju.gradle.plugins.lambdasam.AwsSamDeployerPlugin
 import groovy.util.logging.Slf4j
+import org.gradle.api.Project
 import org.gradle.testfixtures.ProjectBuilder
 import org.junit.After
 import org.junit.Before
@@ -81,7 +82,7 @@ class DeploySamTaskIntegrationTest {
         Files.copy(samTemplateSource, samTemplateDest)
         Files.copy(fatJarSource, fatJarDest)
 
-        def project = ProjectBuilder.builder().withName('DeploySamTaskIntegrationTest').withProjectDir(temp).build()
+        Project project = ProjectBuilder.builder().withName('DeploySamTaskIntegrationTest').withProjectDir(temp).build()
         AwsSamDeployerPlugin plugin = new AwsSamDeployerPlugin()
         plugin.apply(project)
         project.'aws-sam-deployer' {
@@ -99,6 +100,7 @@ class DeploySamTaskIntegrationTest {
             forceUploads = true
         }
 
+        project.evaluate()
         // run the package sam task, since deploy depends on it
         def packageSameTask = project.tasks.getByName(AwsSamDeployerPlugin.TaskDefinitions.PACKAGE_SAM_TASK.name as String) as PackageSamTask
         packageSameTask.taskAction()

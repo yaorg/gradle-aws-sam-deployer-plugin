@@ -2,7 +2,6 @@ package com.fieldju.gradle.plugins.lambdasam
 
 import com.fieldju.gradle.plugins.lambdasam.tasks.DeploySamTask
 import com.fieldju.gradle.plugins.lambdasam.tasks.PackageSamTask
-import com.fieldju.gradle.plugins.lambdasam.tasks.SamTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.logging.Logger
@@ -36,22 +35,22 @@ class AwsSamDeployerPlugin implements Plugin<Project> {
     }
 
     protected void configureTasks(Project project) {
-        project.tasks.withType(SamTask) {
-            conventionMapping.region = { (project.extensions.getByName(EXTENSION_NAME) as AwsSamDeployerExtension).region }
-        }
+        AwsSamDeployerExtension extension = project.extensions.getByName(EXTENSION_NAME) as AwsSamDeployerExtension
 
-        project.tasks.withType(DeploySamTask) {
-            conventionMapping.stackName = { (project.extensions.getByName(EXTENSION_NAME) as AwsSamDeployerExtension).stackName }
-            conventionMapping.parameterOverrides = { (project.extensions.getByName(EXTENSION_NAME) as AwsSamDeployerExtension).parameterOverrides }
-        }
+        project.afterEvaluate {
+            DeploySamTask deploySamTask = project.tasks.getByName(TaskDefinitions.DEPLOY_SAM_TASK.name) as DeploySamTask
+            deploySamTask.region = extension.getRegion()
+            deploySamTask.stackName = extension.getStackName()
+            deploySamTask.parameterOverrides = extension.parameterOverrides
 
-        project.tasks.withType(PackageSamTask) {
-            conventionMapping.s3Bucket = { (project.extensions.getByName(EXTENSION_NAME) as AwsSamDeployerExtension).s3Bucket }
-            conventionMapping.s3Prefix = { (project.extensions.getByName(EXTENSION_NAME) as AwsSamDeployerExtension).s3Prefix }
-            conventionMapping.kmsKeyId = { (project.extensions.getByName(EXTENSION_NAME) as AwsSamDeployerExtension).kmsKeyId }
-            conventionMapping.forceUploads = { (project.extensions.getByName(EXTENSION_NAME) as AwsSamDeployerExtension).forceUploads }
-            conventionMapping.samTemplatePath = { (project.extensions.getByName(EXTENSION_NAME) as AwsSamDeployerExtension).samTemplatePath }
-            conventionMapping.tokenArtifactMap = { (project.extensions.getByName(EXTENSION_NAME) as AwsSamDeployerExtension).tokenArtifactMap }
+            PackageSamTask packageSamTask = project.tasks.getByName(TaskDefinitions.PACKAGE_SAM_TASK.name) as PackageSamTask
+            packageSamTask.region = extension.getRegion()
+            packageSamTask.s3Bucket = extension.s3Bucket
+            packageSamTask.s3Prefix = extension.s3Prefix
+            packageSamTask.kmsKeyId = extension.kmsKeyId
+            packageSamTask.forceUploads = extension.forceUploads
+            packageSamTask.samTemplatePath = extension.getSamTemplatePath()
+            packageSamTask.tokenArtifactMap = extension.tokenArtifactMap
         }
     }
 

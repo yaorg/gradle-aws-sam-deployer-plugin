@@ -5,6 +5,7 @@ import com.amazonaws.services.cloudformation.AmazonCloudFormationClient
 import com.amazonaws.services.cloudformation.model.Parameter
 import com.amazonaws.services.cloudformation.model.TemplateParameter
 import com.fieldju.gradle.plugins.lambdasam.services.cloudformation.CloudFormationDeployer
+import org.gradle.api.GradleException
 import org.gradle.api.tasks.Input
 
 class DeploySamTask extends SamTask {
@@ -37,6 +38,7 @@ class DeploySamTask extends SamTask {
         List<Parameter> parameterOverrides = mergeParameters(parameterOverrides, templateDefinedParameters)
         Set<String> capabilities = ['CAPABILITY_IAM'] as Set
 
+        def stackName = getStackName()
         def changeSetMetadata = deployer.createAndWaitForChangeSet(stackName, samTemplate, parameterOverrides, capabilities)
 
         def executeChangeSet = true
@@ -82,5 +84,12 @@ class DeploySamTask extends SamTask {
         }
 
         return parameters
+    }
+
+    private String getStackName() {
+        if (stackName == null || stackName == "") {
+            throw new GradleException("${stackName} is a required property")
+        }
+        return stackName
     }
 }

@@ -77,6 +77,10 @@ class PackageSamTask extends SamTask {
     }
 
     private String getSamTemplateAsString() {
+        if (samTemplatePath == null || samTemplatePath == "") {
+            throw new GradleException("samTemplatePath is a required property")
+        }
+
         File samTemplate = new File(samTemplatePath)
 
         // if the template is not a real file fail

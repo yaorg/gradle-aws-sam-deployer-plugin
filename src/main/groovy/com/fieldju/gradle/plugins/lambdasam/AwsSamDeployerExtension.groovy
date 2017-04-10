@@ -14,19 +14,11 @@ class AwsSamDeployerExtension {
     Map<String, String> parameterOverrides = [:]
     boolean forceUploads = false
 
-    String getSamTemplateAsString() {
+    String getSamTemplatePath() {
         if (samTemplatePath == null || samTemplatePath == "") {
             throw new GradleException("samTemplatePath is a required lambdasam extention property")
         }
-
-        File samTemplate = new File(samTemplatePath)
-
-        // if the template is not a real file fail
-        if (! (samTemplate.exists() && samTemplate.isFile())) {
-            throw new GradleException("The template: ${samTemplatePath} did not exist or was not a file")
-        }
-
-        return samTemplate.text
+        return samTemplatePath
     }
 
     String getStackName() {

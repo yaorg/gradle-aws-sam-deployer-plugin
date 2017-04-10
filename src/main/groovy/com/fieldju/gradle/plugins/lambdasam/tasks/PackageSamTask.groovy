@@ -68,11 +68,22 @@ class PackageSamTask extends SamTask {
         File buildDir = new File("${project.getBuildDir().absolutePath}${File.separator}sam")
         buildDir.mkdirs()
         File dest = new File("${buildDir.absolutePath}${File.separator}sam-deploy.yaml")
-        dest.write(samTemplatePath)
+        dest.write(getSamTemplateAsString())
         // replace the tokens with the s3 URIs
         tokenS3UriMap.each { token, uri ->
             logger.lifecycle("Injecting ${uri} into ${dest.absolutePath} for token: ${token}")
             ant.replace(file: dest.absolutePath, token: token, value: uri)
         }
+    }
+
+    private String getSamTemplateAsString() {
+        File samTemplate = new File(samTemplatePath)
+
+        // if the template is not a real file fail
+        if (! (samTemplate.exists() && samTemplate.isFile())) {
+            throw new GradleException("The template: ${samTemplatePath} did not exist or was not a file")
+        }
+
+        return samTemplate.text
     }
 }

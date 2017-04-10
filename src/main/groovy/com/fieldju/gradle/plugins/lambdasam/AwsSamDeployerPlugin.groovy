@@ -2,6 +2,7 @@ package com.fieldju.gradle.plugins.lambdasam
 
 import com.fieldju.gradle.plugins.lambdasam.tasks.DeploySamTask
 import com.fieldju.gradle.plugins.lambdasam.tasks.PackageSamTask
+import com.fieldju.gradle.plugins.lambdasam.tasks.SamTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.logging.Logger
@@ -15,6 +16,7 @@ class AwsSamDeployerPlugin implements Plugin<Project> {
     @Override
     void apply(Project project) {
         project.extensions.create(EXTENSION_NAME, AwsSamDeployerExtension)
+        configureTasks(project)
         addTasks(project)
     }
 
@@ -30,6 +32,26 @@ class AwsSamDeployerPlugin implements Plugin<Project> {
                     description: taskDef.description,
                     dependsOn: taskDef.dependsOn
             )
+        }
+    }
+
+    protected void configureTasks(Project project) {
+        project.tasks.withType(SamTask) {
+            conventionMapping.region = { (project.extensions.getByName(EXTENSION_NAME) as AwsSamDeployerExtension).region }
+        }
+
+        project.tasks.withType(DeploySamTask) {
+            conventionMapping.stackName = { (project.extensions.getByName(EXTENSION_NAME) as AwsSamDeployerExtension).stackName }
+            conventionMapping.parameterOverrides = { (project.extensions.getByName(EXTENSION_NAME) as AwsSamDeployerExtension).parameterOverrides }
+        }
+
+        project.tasks.withType(PackageSamTask) {
+            conventionMapping.s3Bucket = { (project.extensions.getByName(EXTENSION_NAME) as AwsSamDeployerExtension).s3Bucket }
+            conventionMapping.s3Prefix = { (project.extensions.getByName(EXTENSION_NAME) as AwsSamDeployerExtension).s3Prefix }
+            conventionMapping.kmsKeyId = { (project.extensions.getByName(EXTENSION_NAME) as AwsSamDeployerExtension).kmsKeyId }
+            conventionMapping.forceUploads = { (project.extensions.getByName(EXTENSION_NAME) as AwsSamDeployerExtension).forceUploads }
+            conventionMapping.samTemplatePath = { (project.extensions.getByName(EXTENSION_NAME) as AwsSamDeployerExtension).samTemplatePath }
+            conventionMapping.tokenArtifactMap = { (project.extensions.getByName(EXTENSION_NAME) as AwsSamDeployerExtension).tokenArtifactMap }
         }
     }
 

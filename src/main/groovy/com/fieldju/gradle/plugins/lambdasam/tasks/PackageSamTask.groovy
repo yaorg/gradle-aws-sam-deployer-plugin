@@ -1,13 +1,33 @@
 package com.fieldju.gradle.plugins.lambdasam.tasks
 
-import com.fieldju.gradle.plugins.lambdasam.AwsSamDeployerExtension
-import com.fieldju.gradle.plugins.lambdasam.AwsSamDeployerPlugin
 import com.fieldju.gradle.plugins.lambdasam.services.s3.S3Uploader
 import org.gradle.api.GradleException
-import org.gradle.api.tasks.TaskAction
+import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.Optional
 
 class PackageSamTask extends SamTask {
-    static final String TASK_GROUP = 'AWS Lambda SAM Deployer'
+
+    @Input
+    @Optional
+    String s3Bucket
+
+    @Input
+    @Optional
+    String s3Prefix
+
+    @Input
+    @Optional
+    String kmsKeyId
+
+    @Input
+    @Optional
+    boolean forceUploads
+
+    @Input
+    String samTemplatePath
+
+    @Input
+    Map<String, String> tokenArtifactMap
 
     PackageSamTask() {
         group = TASK_GROUP
@@ -16,20 +36,16 @@ class PackageSamTask extends SamTask {
     /**
      * This is the entry point for this task
      */
-    @TaskAction
+    @Override
     void taskAction() {
-        def config = project.extensions.getByName(AwsSamDeployerPlugin.EXTENSION_NAME) as AwsSamDeployerExtension
-        logExtraDetails(config)
 
-        Map<String, String> tokenArtifactMap = config.getTokenArtifactMap()
+        Map<String, String> tokenArtifactMap = tokenArtifactMap
         Map<String, String> tokenS3UriMap = [:]
         if (tokenArtifactMap.isEmpty()) {
             logger.warn("There were no tokens defined in the tokenArtifactMap, this task will not upload any" +
                     " artifacts to s3 and automatically inject them into the copied deployable sam template.")
         } else {
-            def s3Bucket = config.getS3Bucket()
-            def s3Prefix = config.getS3Prefix()
-            S3Uploader s3Uploader = new S3Uploader(config.getRegion(), config.getKmsKeyId(), config.getForceUploads())
+            S3Uploader s3Uploader = new S3Uploader(region, kmsKeyId, forceUploads)
 
             tokenArtifactMap.each { token, artifactPath ->
                 File artifactToUploadToS3 = new File(artifactPath)
@@ -52,7 +68,7 @@ class PackageSamTask extends SamTask {
         File buildDir = new File("${project.getBuildDir().absolutePath}${File.separator}sam")
         buildDir.mkdirs()
         File dest = new File("${buildDir.absolutePath}${File.separator}sam-deploy.yaml")
-        dest.write(config.getSamTemplateAsString())
+        dest.write(samTemplatePath)
         // replace the tokens with the s3 URIs
         tokenS3UriMap.each { token, uri ->
             logger.lifecycle("Injecting ${uri} into ${dest.absolutePath} for token: ${token}")

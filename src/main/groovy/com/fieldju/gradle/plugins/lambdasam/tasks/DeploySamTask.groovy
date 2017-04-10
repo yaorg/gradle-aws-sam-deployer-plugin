@@ -4,13 +4,16 @@ import com.amazonaws.regions.Regions
 import com.amazonaws.services.cloudformation.AmazonCloudFormationClient
 import com.amazonaws.services.cloudformation.model.Parameter
 import com.amazonaws.services.cloudformation.model.TemplateParameter
-import com.fieldju.gradle.plugins.lambdasam.AwsSamDeployerExtension
-import com.fieldju.gradle.plugins.lambdasam.AwsSamDeployerPlugin
 import com.fieldju.gradle.plugins.lambdasam.services.cloudformation.CloudFormationDeployer
-import org.gradle.api.tasks.TaskAction
+import org.gradle.api.tasks.Input
 
 class DeploySamTask extends SamTask {
-    static final String TASK_GROUP = 'AWS Lambda SAM Deployer'
+
+    @Input
+    String stackName
+
+    @Input
+    Map<String, String> parameterOverrides
 
     DeploySamTask() {
         group = TASK_GROUP
@@ -19,23 +22,19 @@ class DeploySamTask extends SamTask {
     /**
      * This is the entry point for this task
      */
-    @TaskAction
+    @Override
     void taskAction() {
-        def config = project.extensions.getByName(AwsSamDeployerPlugin.EXTENSION_NAME) as AwsSamDeployerExtension
-        logExtraDetails(config)
-
         CloudFormationDeployer deployer = new CloudFormationDeployer(
                 AmazonCloudFormationClient.builder()
                         .standard()
-                        .withRegion(Regions.fromName(config.getRegion()))
+                        .withRegion(Regions.fromName(region))
                         .build() as AmazonCloudFormationClient
         )
 
-        String stackName = config.getStackName()
         String samTemplate = new File("${project.buildDir.absolutePath}${File.separator}sam${File.separator}sam-deploy.yaml").text
 
         List<TemplateParameter> templateDefinedParameters = deployer.getTemplateParameters(samTemplate)
-        List<Parameter> parameterOverrides = mergeParameters(config.getParameterOverrides(), templateDefinedParameters)
+        List<Parameter> parameterOverrides = mergeParameters(parameterOverrides, templateDefinedParameters)
         Set<String> capabilities = ['CAPABILITY_IAM'] as Set
 
         def changeSetMetadata = deployer.createAndWaitForChangeSet(stackName, samTemplate, parameterOverrides, capabilities)

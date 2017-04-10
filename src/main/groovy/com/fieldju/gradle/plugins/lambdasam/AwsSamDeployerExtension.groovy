@@ -16,7 +16,7 @@ class AwsSamDeployerExtension {
 
     String getSamTemplateAsString() {
         if (samTemplatePath == null || samTemplatePath == "") {
-            throw new GradleException("${samTemplatePath} is a required lambdasam extention property")
+            throw new GradleException("samTemplatePath is a required lambdasam extention property")
         }
 
         File samTemplate = new File(samTemplatePath)

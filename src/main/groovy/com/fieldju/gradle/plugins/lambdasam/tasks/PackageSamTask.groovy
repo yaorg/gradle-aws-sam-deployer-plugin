@@ -21,17 +21,16 @@ class PackageSamTask extends SamTask {
         def config = project.extensions.getByName(AwsSamDeployerPlugin.EXTENSION_NAME) as AwsSamDeployerExtension
         logExtraDetails(config)
 
-        def s3Bucket = config.getS3Bucket()
-        def s3Prefix = config.getS3Prefix()
-
-        S3Uploader s3Uploader = new S3Uploader(config.getRegion(), config.getKmsKeyId(), config.getForceUploads())
-
         Map<String, String> tokenArtifactMap = config.getTokenArtifactMap()
         Map<String, String> tokenS3UriMap = [:]
         if (tokenArtifactMap.isEmpty()) {
             logger.warn("There were no tokens defined in the tokenArtifactMap, this task will not upload any" +
                     " artifacts to s3 and automatically inject them into the copied deployable sam template.")
         } else {
+            def s3Bucket = config.getS3Bucket()
+            def s3Prefix = config.getS3Prefix()
+            S3Uploader s3Uploader = new S3Uploader(config.getRegion(), config.getKmsKeyId(), config.getForceUploads())
+
             tokenArtifactMap.each { token, artifactPath ->
                 File artifactToUploadToS3 = new File(artifactPath)
                 if (! (artifactToUploadToS3.exists() && artifactToUploadToS3.isFile())) {

@@ -70,7 +70,7 @@ Configure the extension properties in the *aws-sam-deployer* closure:
 **Property name**  | **Type**            | **Required** | **Description**
 -------------------|---------------------|--------------|---
 region             | String              | Yes          | The region to upload the fatJar / lambda code artifact, and execute the cloud formation in
-s3Bucket           | String              | Yes          | The S3 Bucket to store the fatJar / lambda code artifact
+s3Bucket           | String              | No           | The S3 Bucket to store the fatJar / lambda code artifact
 s3prefix           | String              | No           | The prefix in the bucket to use when storing the fatJar / lambda code artifact
 kmsKeyId           | String              | No           | The kms cmk id to use to encrypt the fatJar / lambda code artifact when uploading to S3, if not supplied server side AES256 will be used
 samTemplatePath    | String              | Yes          | The file path to the SAM Yaml or JSON where you have defined your serverless application model

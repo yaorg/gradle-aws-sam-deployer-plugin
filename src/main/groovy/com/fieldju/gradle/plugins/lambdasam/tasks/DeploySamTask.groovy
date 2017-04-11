@@ -16,6 +16,9 @@ class DeploySamTask extends SamTask {
     @Input
     Map<String, String> parameterOverrides
 
+    @Input
+    String templatePath = "${project.buildDir.absolutePath}${File.separator}sam${File.separator}sam-deploy.yaml"
+
     DeploySamTask() {
         group = TASK_GROUP
     }
@@ -32,7 +35,11 @@ class DeploySamTask extends SamTask {
                         .build() as AmazonCloudFormationClient
         )
 
-        String samTemplate = new File("${project.buildDir.absolutePath}${File.separator}sam${File.separator}sam-deploy.yaml").text
+        File template = new File(templatePath)
+        if (! template.exists() || ! template.isFile()) {
+            throw new GradleException("The deployable cloudformation template: ${templatePath} did not exist or was not a file")
+        }
+        String samTemplate = template.text
 
         List<TemplateParameter> templateDefinedParameters = deployer.getTemplateParameters(samTemplate)
         List<Parameter> parameterOverrides = mergeParameters(parameterOverrides, templateDefinedParameters)

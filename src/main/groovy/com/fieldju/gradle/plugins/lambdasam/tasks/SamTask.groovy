@@ -18,7 +18,6 @@ public abstract class SamTask extends DefaultTask {
     protected void logExtraDetails() {
         AwsSamDeployerExtension extension = project.extensions.getByName(AwsSamDeployerPlugin.EXTENSION_NAME) as AwsSamDeployerExtension
         try {
-
             def stsClient = AWSSecurityTokenServiceClient.builder().standard().withRegion(extension.getRegion()).build()
             def res = stsClient.getCallerIdentity(new GetCallerIdentityRequest())
             logger.lifecycle("Running Command: ${this.name} with AWS Identity info, ARN: ${res.arn}, Account: ${res.account}, UserId: ${res.userId}")
@@ -26,15 +25,7 @@ public abstract class SamTask extends DefaultTask {
             logger.error("Failed to get caller identity via AWS STS", t)
         }
 
-        logger.info("region: ${extension.region}")
-        logger.info("s3Bucket: ${extension.s3Bucket}")
-        logger.info("s3Prefix: ${extension.s3Prefix}")
-        logger.info("kmsKeyId: ${extension.kmsKeyId}")
-        logger.info("samTemplatePath: ${extension.samTemplatePath}")
-        logger.info("stackName: ${extension.stackName}")
-        logger.info("tokenArtifactMap: ${extension.tokenArtifactMap}")
-        logger.info("parameterOverrides: ${extension.parameterOverrides}")
-        logger.info("forceUploads: ${extension.forceUploads}")
+        logger.info("extention: ${extension.toString()}")
     }
 
     @TaskAction

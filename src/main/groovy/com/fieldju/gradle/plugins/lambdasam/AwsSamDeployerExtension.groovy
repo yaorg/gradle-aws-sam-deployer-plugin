@@ -14,4 +14,19 @@ class AwsSamDeployerExtension {
     Map<String, String> parameterOverrides = [:]
     boolean forceUploads = false
 
+
+    @Override
+    public String toString() {
+        return "AwsSamDeployerExtension{" +
+                "region='" + region + '\'' +
+                ", s3Bucket='" + s3Bucket + '\'' +
+                ", s3Prefix='" + s3Prefix + '\'' +
+                ", kmsKeyId='" + kmsKeyId + '\'' +
+                ", samTemplatePath='" + samTemplatePath + '\'' +
+                ", stackName='" + stackName + '\'' +
+                ", tokenArtifactMap=" + tokenArtifactMap +
+                ", parameterOverrides=" + parameterOverrides +
+                ", forceUploads=" + forceUploads +
+                '}';
+    }
 }

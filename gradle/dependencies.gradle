@@ -10,7 +10,7 @@ dependencies {
     compile group: 'com.amazonaws', name: 'aws-java-sdk-s3', version: "$awsSDKVersion"
     compile group: 'com.amazonaws', name: 'aws-java-sdk-cloudformation', version: "$awsSDKVersion"
     compile group: 'com.amazonaws', name: 'aws-java-sdk-sts', version: "$awsSDKVersion"
-
+    compile 'com.fieldju:commons:1.0.0'
 
     testCompile "junit:junit:4.12"
     testCompile "org.mockito:mockito-all:1.10.19"

@@ -1,11 +1,16 @@
 package com.fieldju.gradle.plugins.lambdasam.tasks
 
+import com.amazonaws.regions.Regions
+import com.amazonaws.services.cloudformation.AmazonCloudFormationClient
 import com.fieldju.commons.StringUtils
+import com.fieldju.gradle.plugins.lambdasam.services.cloudformation.CloudFormationDeployer
+import org.gradle.api.DefaultTask
 import org.gradle.api.GradleException
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Optional
+import org.gradle.api.tasks.TaskAction
 
-class MultiRegionSamDeployTask extends SamTask {
+class MultiRegionSamDeployTask extends DefaultTask {
 
     @Input
     @Optional
@@ -24,9 +29,12 @@ class MultiRegionSamDeployTask extends SamTask {
     @Input
     Map<String, Map<String, String>> regionToParameterOverridesMap = [:]
 
-    @Override
+    @Input
+    boolean executeChangeSet = true
+
+    @TaskAction
     void taskAction() {
-        regions.each { region ->
+        regions.each { String region ->
             Map<String, String> parameterOverrides
             if (regionToParameterOverridesMap.containsKey(region)) {
                 parameterOverrides = regionToParameterOverridesMap."${region}"
@@ -45,14 +53,15 @@ class MultiRegionSamDeployTask extends SamTask {
                         "region: ${region} must be set")
             }
 
-            DeploySamTask deploySamTask = new DeploySamTask()
-            deploySamTask.region = region
-            deploySamTask.stackName = stackName
-            deploySamTask.parameterOverrides = parameterOverrides
-            deploySamTask.templatePath = templatePath
+            CloudFormationDeployer deployer = new CloudFormationDeployer(
+                    AmazonCloudFormationClient.builder()
+                            .standard()
+                            .withRegion(Regions.fromName(region))
+                            .build() as AmazonCloudFormationClient
+            )
 
             logger.lifecycle("Creating and executing changeset for ${templatePath} with stackname ${stackName} in region ${region} with overrides ${parameterOverrides}")
-            deploySamTask.taskAction()
+            deployer.deployStack(stackName, templatePath, parameterOverrides, executeChangeSet)
         }
     }
 }

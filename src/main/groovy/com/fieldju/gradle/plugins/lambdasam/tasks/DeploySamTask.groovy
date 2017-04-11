@@ -2,9 +2,11 @@ package com.fieldju.gradle.plugins.lambdasam.tasks
 
 import com.amazonaws.regions.Regions
 import com.amazonaws.services.cloudformation.AmazonCloudFormationClient
+import com.fieldju.gradle.plugins.lambdasam.services.PackageAndDeployTaskHelper
 import com.fieldju.gradle.plugins.lambdasam.services.cloudformation.CloudFormationDeployer
 import org.gradle.api.GradleException
 import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.Optional
 
 class DeploySamTask extends SamTask {
 
@@ -15,7 +17,8 @@ class DeploySamTask extends SamTask {
     Map<String, String> parameterOverrides
 
     @Input
-    String templatePath = "${project.buildDir.absolutePath}${File.separator}sam${File.separator}sam-deploy.yaml"
+    @Optional
+    String templatePath
 
     @Input
     boolean executeChangeSet = true
@@ -29,22 +32,9 @@ class DeploySamTask extends SamTask {
      */
     @Override
     void taskAction() {
-        CloudFormationDeployer deployer = new CloudFormationDeployer(
-                AmazonCloudFormationClient.builder()
-                        .standard()
-                        .withRegion(Regions.fromName(region))
-                        .build() as AmazonCloudFormationClient
-        )
+        def calculatedTemplatePath = templatePath ? templatePath : "${project.buildDir.absolutePath}${File.separator}sam${File.separator}sam-deploy-${region}.yaml"
 
-        deployer.deployStack(getStackName(), templatePath, parameterOverrides, executeChangeSet)
-    }
-
-
-
-    private String getStackName() {
-        if (stackName == null || stackName == "") {
-            throw new GradleException("${stackName} is a required property")
-        }
-        return stackName
+        PackageAndDeployTaskHelper helper = new PackageAndDeployTaskHelper(logger)
+        helper.deployProcessedTemplate(region, stackName, calculatedTemplatePath, parameterOverrides, executeChangeSet)
     }
 }

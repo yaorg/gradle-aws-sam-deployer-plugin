@@ -6,7 +6,7 @@ cache:
   - "$HOME/.m2"
 after_success:
 # run the integration test for Pull requests
-- test "${TRAVIS_PULL_REQUEST}" == "true" && ./gradlew integrationTest --info
+- test "${TRAVIS_PULL_REQUEST}" != "false" && echo ${TRAVIS_PULL_REQUEST} && ./gradlew integrationTest --info
 # run the integration test and release for tagged releases
 - test "${TRAVIS_PULL_REQUEST}" == "false" && test "${TRAVIS_TAG}" != "" && ./gradlew
   integrationTest publishPlugins --stacktrace --info

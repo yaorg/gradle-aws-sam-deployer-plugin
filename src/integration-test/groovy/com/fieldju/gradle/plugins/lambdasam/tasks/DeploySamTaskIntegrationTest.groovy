@@ -10,6 +10,7 @@ import com.amazonaws.services.s3.AmazonS3Client
 import com.amazonaws.services.s3.model.DeleteObjectsRequest
 import com.amazonaws.waiters.Waiter
 import com.amazonaws.waiters.WaiterParameters
+import com.fieldju.commons.EnvUtils
 import com.fieldju.gradle.plugins.lambdasam.AwsSamDeployerPlugin
 import groovy.util.logging.Slf4j
 import org.gradle.api.Project
@@ -47,7 +48,7 @@ class DeploySamTaskIntegrationTest {
         s3 = AmazonS3Client.builder().standard().withRegion(regionString).build()
 
         prefix = "gradle-aws-sam-deployer-plugin-integration-test/${UUID.randomUUID().toString()}"
-        bucket = getRequiredTestParam('S3_BUCKET', 'The s3 bucket to upload the lambda fat jar')
+        bucket = EnvUtils.getRequiredEnv('S3_BUCKET', 'The us-west-2 s3 bucket to upload the lambda fat jar')
         log.info("Integration Test stack name: ${testStackName}")
     }
 
@@ -118,13 +119,4 @@ class DeploySamTaskIntegrationTest {
             fail("Failed to assert that the stack: ${testStackName} was successfully created, msg: ${e.errorMessage}")
         }
     }
-
-    static String getRequiredTestParam(String key, String msg) {
-        def value = System.getenv(key)
-        if (value == null || value.trim() == "") {
-            throw new RuntimeException("The environment variable: ${key} is required. Msg: ${msg}")
-        }
-        return value
-    }
-
 }

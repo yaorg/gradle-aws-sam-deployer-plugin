@@ -52,14 +52,19 @@ class MultiRegionPackageAndDeploySamTask extends DefaultTask {
         regions.each { String region ->
             logger.lifecycle("---- Processing region: ${region} ----")
 
-            String s3Bucket = regionToS3BucketMap."${region}"
-            String kmsKeyId = regionToKmsKeyIdMap."${region}"
+            String s3Bucket
+            if (regionToS3BucketMap.containsKey(region)) {
+                s3Bucket = regionToS3BucketMap.get(region)
+            } else {
+                throw new Exception("There was no s3 bucket defined for region: ${region} in regionToS3BucketMap: ${regionToS3BucketMap}")
+            }
+            String kmsKeyId = regionToKmsKeyIdMap.get(region)
 
             def processedTemplatePath = helper.uploadArtifactsAndInjectS3UrlsIntoCopiedCFTemplate(region, s3Bucket,
                     s3Prefix, kmsKeyId, forceUploads, templatePath, tokenArtifactMap, project, ant)
 
             Map<String, String> calculatedParameterOverrides = [:]
-            if (parameterOverrides.isEmpty()) {
+            if (! parameterOverrides.isEmpty()) {
                 calculatedParameterOverrides = parameterOverrides
             } else if (regionToParameterOverridesMap.containsKey(region)) {
                 calculatedParameterOverrides = regionToParameterOverridesMap."${region}"

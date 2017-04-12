@@ -32,13 +32,12 @@ class MultiRegionDeploySamTask extends DefaultTask {
     void taskAction() {
         // Groovy Strings and GStrings don't work together in collections because hashCode() produces different hashes
         // So lets make sure that we are dealing with the same types
-        Map<String, String> regionTemplatePathMap = this.regionTemplatePathMap.collectEntries {
-            String key, String value -> [(key.toString()): value ]  } as Map<String, String>
-        Map<String, Map<String, String>> regionToParameterOverridesMap = this.regionToParameterOverridesMap.collectEntries {
-            key, value -> [(key.toString()): value ]  } as Map<String, Map<String, String>>
+        def regionTemplatePathMap = this.regionTemplatePathMap.collectEntries { String key, String value -> [(key.toString()): value ] }
+        def regionToParameterOverridesMap = this.regionToParameterOverridesMap.collectEntries { key, value -> [(key.toString()): value ] }
         List<String> regions = this.regions*.toString()
 
         PackageAndDeployTaskHelper helper = new PackageAndDeployTaskHelper(logger)
+        //noinspection GroovyAssignabilityCheck
         helper.multiRegionDeploy(templatePath, regionTemplatePathMap, regions,
                 stackName, regionToParameterOverridesMap, executeChangeSet)
     }

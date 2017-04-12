@@ -9,7 +9,7 @@ import org.gradle.api.tasks.TaskAction
 class MultiRegionPackageAndDeploySamTask extends DefaultTask {
 
     @Input
-    def regions = []
+    List<String> regions = []
 
     @Input
     String stackName
@@ -47,6 +47,13 @@ class MultiRegionPackageAndDeploySamTask extends DefaultTask {
 
     @TaskAction
     void taskAction() {
+        // Groovy Strings and GStrings don't work together in collections because hashCode() produces different hashes
+        // So lets make sure that we are dealing with the same types
+        def regionToS3BucketMap = this.regionToS3BucketMap.collectEntries { key, value -> [ (key.toString()) : value ]  }
+        def regionToKmsKeyIdMap = this.regionToKmsKeyIdMap.collectEntries { key, value -> [ (key.toString()) : value ]  }
+        def regionToParameterOverridesMap = this.regionToParameterOverridesMap.collectEntries { key, value -> [ (key.toString()) : value ]  }
+        List<String> regions = this.regions*.toString()
+
         PackageAndDeployTaskHelper helper = new PackageAndDeployTaskHelper(logger)
 
         regions.each { String region ->

@@ -14,10 +14,10 @@ class MultiRegionDeploySamTask extends DefaultTask {
 
     @Input
     @Optional
-    def regionTemplatePathMap = [:]
+    Map<String, String> regionTemplatePathMap = [:]
 
     @Input
-    def regions = []
+    List<String> regions = []
 
     @Input
     String stackName
@@ -30,6 +30,14 @@ class MultiRegionDeploySamTask extends DefaultTask {
 
     @TaskAction
     void taskAction() {
+        // Groovy Strings and GStrings don't work together in collections because hashCode() produces different hashes
+        // So lets make sure that we are dealing with the same types
+        Map<String, String> regionTemplatePathMap = this.regionTemplatePathMap.collectEntries {
+            String key, String value -> [(key.toString()): value ]  } as Map<String, String>
+        Map<String, Map<String, String>> regionToParameterOverridesMap = this.regionToParameterOverridesMap.collectEntries {
+            key, value -> [(key.toString()): value ]  } as Map<String, Map<String, String>>
+        List<String> regions = this.regions*.toString()
+
         PackageAndDeployTaskHelper helper = new PackageAndDeployTaskHelper(logger)
         helper.multiRegionDeploy(templatePath, regionTemplatePathMap, regions,
                 stackName, regionToParameterOverridesMap, executeChangeSet)

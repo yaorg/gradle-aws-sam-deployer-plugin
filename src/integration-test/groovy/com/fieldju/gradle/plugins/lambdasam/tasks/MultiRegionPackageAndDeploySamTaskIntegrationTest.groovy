@@ -38,8 +38,8 @@ class MultiRegionPackageAndDeploySamTaskIntegrationTest {
     void before() {
         testStackName = "MultiRegionPackageAndDeploySamTaskIntegrationTest-${UUID.randomUUID()}"
         regionS3BucketMap = [
-                'us-west-2': EnvUtils.getRequiredEnv('S3_BUCKET', 'The us-west-2 s3 bucket to upload the lambda fat jar'),
-                'us-east-1': EnvUtils.getRequiredEnv('S3_BUCKET_EAST', 'The us-east-2 s3 bucket to upload the lambda fat jar')
+                "us-west-2": EnvUtils.getRequiredEnv('S3_BUCKET', 'The us-west-2 s3 bucket to upload the lambda fat jar'),
+                "us-east-1": EnvUtils.getRequiredEnv('S3_BUCKET_EAST', 'The us-east-2 s3 bucket to upload the lambda fat jar')
         ]
 
         regions.each { regionString ->

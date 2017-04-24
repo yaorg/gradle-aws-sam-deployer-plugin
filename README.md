@@ -78,6 +78,7 @@ stackName          | String              | Yes          | The stack name to use 
 parameterOverrides | Map<String, String> | No           | A map of Parameters and there values to supply the Cloud Formation template
 tokenArtifactMap   | Map<String, String> | No           | A map of ant style tokens ex: `@@FAT_JAR_URI@@` to file paths ex: `${project.buildDir.absolutePath}${File.seperator}libs${File.seperator}my-lambda-project-fat-jar.jar`, the package command uses this map to upload the files to s3 and replaces the tokens in the sam template with the S3 URIs
 forceUploads       | boolean             | No           | By default if this is left off or set to false, to package command uses m5 hashes to skip files that have not changed since the last deploy. Set this to true to force re-uploading
+logStackOutputs    | boolean             | No           | If set to `true` logs stack outputs after template execution.
 
 **Example**
 

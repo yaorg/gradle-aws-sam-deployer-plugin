@@ -42,6 +42,7 @@ class AwsSamDeployerPlugin implements Plugin<Project> {
             deploySamTask.region = extension.getRegion()
             deploySamTask.stackName = extension.getStackName()
             deploySamTask.parameterOverrides = extension.parameterOverrides
+            deploySamTask.logStackOutputs = extension.logStackOutputs
 
             PackageSamTask packageSamTask = project.tasks.getByName(TaskDefinitions.PACKAGE_SAM_TASK.name) as PackageSamTask
             packageSamTask.region = extension.getRegion()

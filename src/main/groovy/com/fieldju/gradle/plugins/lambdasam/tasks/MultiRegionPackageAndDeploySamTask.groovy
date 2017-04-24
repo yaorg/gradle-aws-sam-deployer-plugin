@@ -45,6 +45,9 @@ class MultiRegionPackageAndDeploySamTask extends DefaultTask {
     @Input
     boolean executeChangeSet = true
 
+    @Input
+    boolean logStackOutputs = false
+
     @TaskAction
     void taskAction() {
         // Groovy Strings and GStrings don't work together in collections because hashCode() produces different hashes
@@ -77,7 +80,7 @@ class MultiRegionPackageAndDeploySamTask extends DefaultTask {
                 calculatedParameterOverrides = regionToParameterOverridesMap."${region}"
             }
 
-            helper.deployProcessedTemplate(region, stackName, processedTemplatePath, calculatedParameterOverrides, executeChangeSet)
+            helper.deployProcessedTemplate(region, stackName, processedTemplatePath, calculatedParameterOverrides, executeChangeSet, logStackOutputs)
         }
     }
 

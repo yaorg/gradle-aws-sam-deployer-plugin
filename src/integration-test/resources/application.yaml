@@ -49,3 +49,7 @@ Resources:
                   - logs:CreateLogStream
                   - logs:PutLogEvents
                 Resource: "*"
+Outputs:
+  HealthCheckEndpoint:
+    Description: Role Arn
+    Value: !GetAtt LambdaRole.Arn

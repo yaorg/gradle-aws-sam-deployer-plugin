@@ -23,6 +23,9 @@ class DeploySamTask extends SamTask {
     @Input
     boolean executeChangeSet = true
 
+    @Input
+    boolean logStackOutputs = false
+
     DeploySamTask() {
         group = TASK_GROUP
     }
@@ -35,6 +38,6 @@ class DeploySamTask extends SamTask {
         def calculatedTemplatePath = templatePath ? templatePath : "${project.buildDir.absolutePath}${File.separator}sam${File.separator}sam-deploy-${region}.yaml"
 
         PackageAndDeployTaskHelper helper = new PackageAndDeployTaskHelper(logger)
-        helper.deployProcessedTemplate(region, stackName, calculatedTemplatePath, parameterOverrides, executeChangeSet)
+        helper.deployProcessedTemplate(region, stackName, calculatedTemplatePath, parameterOverrides, executeChangeSet, logStackOutputs)
     }
 }

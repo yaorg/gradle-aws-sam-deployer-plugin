@@ -99,6 +99,7 @@ class DeploySamTaskIntegrationTest {
                     Foo: 'bar'
             ]
             forceUploads = true
+            logStackOutputs = true
         }
 
         project.evaluate()

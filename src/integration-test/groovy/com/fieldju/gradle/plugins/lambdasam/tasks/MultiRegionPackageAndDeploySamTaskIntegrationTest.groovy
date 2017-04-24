@@ -80,7 +80,7 @@ class MultiRegionPackageAndDeploySamTaskIntegrationTest {
     }
 
     @Test
-    void "test that the package and deploy sam tasks can deploy hello word lambda function"() {
+    void "test that the package and deploy sam tasks can deploy hello word lambda function in multiple regions"() {
         File temp = File.createTempDir()
 
         def samTemplateSource = Paths.get(getClass().getClassLoader().getResource('application.yaml').toURI())

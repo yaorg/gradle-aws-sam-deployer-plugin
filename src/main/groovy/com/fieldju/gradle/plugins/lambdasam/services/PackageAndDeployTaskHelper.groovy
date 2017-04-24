@@ -22,7 +22,8 @@ class PackageAndDeployTaskHelper {
                           List<String> regions,
                           String stackName,
                           Map<String, Map<String, String>> regionToParameterOverridesMap,
-                          boolean executeChangeSet) {
+                          boolean executeChangeSet,
+                          boolean logStackOutputs) {
 
         regions.each { String region ->
             Map<String, String> parameterOverrides
@@ -52,6 +53,9 @@ class PackageAndDeployTaskHelper {
 
             logger.lifecycle("Creating and executing changeset for ${templatePath} with stackname ${stackName} in region ${region} with overrides ${parameterOverrides}")
             deployer.deployStack(stackName, calculatedTemplatePath, parameterOverrides, executeChangeSet)
+            if (logStackOutputs) {
+                deployer.logOutputs(stackName)
+            }
         }
     }
 
@@ -121,7 +125,8 @@ class PackageAndDeployTaskHelper {
                               String stackName,
                               String templatePath,
                               Map<String, String> parameterOverrides,
-                              boolean executeChangeSet) {
+                              boolean executeChangeSet,
+                              boolean logStackOutputs) {
 
         if (StringUtils.isBlank(stackName)) {
             throw new GradleException("stackName cannot be blank")
@@ -135,5 +140,8 @@ class PackageAndDeployTaskHelper {
         )
 
         deployer.deployStack(stackName, templatePath, parameterOverrides, executeChangeSet)
+        if (logStackOutputs) {
+            deployer.logOutputs(stackName)
+        }
     }
 }

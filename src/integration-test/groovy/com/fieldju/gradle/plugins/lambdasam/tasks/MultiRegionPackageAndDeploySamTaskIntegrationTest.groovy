@@ -108,6 +108,7 @@ class MultiRegionPackageAndDeploySamTaskIntegrationTest {
         task.parameterOverrides = [
                 Foo: 'bar'
         ]
+        task.logStackOutputs = true
 
         MultiRegionPackageAndDeploySamTask testTask = project.tasks.getByName('testTask') as MultiRegionPackageAndDeploySamTask
         testTask.taskAction()

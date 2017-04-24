@@ -1,7 +1,5 @@
 package com.fieldju.gradle.plugins.lambdasam
 
-import org.gradle.api.GradleException
-
 class AwsSamDeployerExtension {
 
     String region
@@ -13,6 +11,7 @@ class AwsSamDeployerExtension {
     Map<String, String> tokenArtifactMap = [:]
     Map<String, String> parameterOverrides = [:]
     boolean forceUploads = false
+    boolean logStackOutputs = false
 
 
     @Override
@@ -27,6 +26,7 @@ class AwsSamDeployerExtension {
                 ", tokenArtifactMap=" + tokenArtifactMap +
                 ", parameterOverrides=" + parameterOverrides +
                 ", forceUploads=" + forceUploads +
+                ", logStackOutputs=" + logStackOutputs +
                 '}';
     }
 }

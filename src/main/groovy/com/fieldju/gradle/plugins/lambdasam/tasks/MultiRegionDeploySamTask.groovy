@@ -28,6 +28,9 @@ class MultiRegionDeploySamTask extends DefaultTask {
     @Input
     boolean executeChangeSet = true
 
+    @Input
+    boolean logStackOutputs = false
+
     @TaskAction
     void taskAction() {
         // Groovy Strings and GStrings don't work together in collections because hashCode() produces different hashes
@@ -39,6 +42,6 @@ class MultiRegionDeploySamTask extends DefaultTask {
         PackageAndDeployTaskHelper helper = new PackageAndDeployTaskHelper(logger)
         //noinspection GroovyAssignabilityCheck
         helper.multiRegionDeploy(templatePath, regionTemplatePathMap, regions,
-                stackName, regionToParameterOverridesMap, executeChangeSet)
+                stackName, regionToParameterOverridesMap, executeChangeSet, logStackOutputs)
     }
 }

@@ -9,6 +9,7 @@ import com.amazonaws.services.cloudformation.model.DescribeChangeSetResult
 import com.amazonaws.services.cloudformation.model.DescribeStacksRequest
 import com.amazonaws.services.cloudformation.model.ExecuteChangeSetRequest
 import com.amazonaws.services.cloudformation.model.ExecuteChangeSetResult
+import com.amazonaws.services.cloudformation.model.Output
 import com.amazonaws.services.cloudformation.model.Parameter
 import com.amazonaws.services.cloudformation.model.TemplateParameter
 import com.amazonaws.services.cloudformation.model.ValidateTemplateRequest
@@ -294,5 +295,26 @@ class CloudFormationDeployer {
 
     class ChangeSetMetadata {
         String name, type
+    }
+
+    private List<Output> getStackOutputs(String stackName) {
+        def res = amazonCloudFormation.describeStacks(new DescribeStacksRequest().withStackName(stackName))
+        if (res.stacks.size() == 1) {
+            def stack = res.stacks.get(0)
+            return stack.outputs
+        } else {
+            logger.warn("Failed to describe stack: ${stackName}, AWS returned ${res.stacks.size()} stacks with that name.")
+            return []
+        }
+    }
+
+    public void logOutputs(String stackName) {
+        def outputs = getStackOutputs(stackName)
+        logger.lifecycle("The stack: ${stackName} has the following stack outputs")
+        outputs.each { output ->
+            logger.lifecycle("key: ${output.outputKey}")
+            logger.lifecycle("value: ${output.outputValue}")
+            logger.lifecycle("description: ${output.description}")
+        }
     }
 }

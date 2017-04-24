@@ -50,6 +50,6 @@ Resources:
                   - logs:PutLogEvents
                 Resource: "*"
 Outputs:
-  HealthCheckEndpoint:
+  LambdaRoleArn:
     Description: Role Arn
     Value: !GetAtt LambdaRole.Arn
